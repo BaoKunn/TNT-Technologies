@@ -12,7 +12,8 @@
           />
         </Transition>
         <RouterLink to="/" aria-label="Visit home page">
-          <VuesticLogo />
+          <!-- <VuesticLogo /> -->
+          <img src="../../../logoTNT.jpg" style="height: 30px;" alt="Logo" class="app-logo" />
         </RouterLink>
       </div>
     </template>

@@ -5,7 +5,7 @@
         <VaButton preset="secondary" color="textPrimary">
           <span class="profile-dropdown__anchor min-w-max">
             <slot />
-            <VaAvatar :size="32" color="warning"> 😍 </VaAvatar>
+            <VaAvatar :size="32" color="success"> 🧑 </VaAvatar>
           </span>
         </VaButton>
       </template>
@@ -99,7 +99,7 @@ withDefaults(
           },
           {
             name: 'helpAndSupport',
-            href: 'https://discord.gg/u7fQdqQt8c',
+            // href: 'https://discord.gg/u7fQdqQt8c',
             icon: 'mso-error',
           },
         ],

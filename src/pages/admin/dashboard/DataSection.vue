@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+  <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-3">
     <DataSectionItem
       v-for="metric in dashboardMetrics"
       :key="metric.id"
@@ -11,7 +11,7 @@
       :icon-color="metric.iconColor"
     >
       <template #icon>
-        <VaIcon :name="metric.icon" size="large" />
+        <VaIcon :name="metric.icon" size="medium" />
       </template>
     </DataSectionItem>
   </div>
@@ -38,18 +38,18 @@ const { getColor } = useColors()
 const dashboardMetrics = computed<DashboardMetric[]>(() => [
   {
     id: 'openInvoices',
-    title: 'Open invoices',
-    value: '$35,548',
+    title: 'Xuất chuồng',
+    value: '1000',
     icon: 'mso-attach_money',
     changeText: '$1, 450',
     changeDirection: 'down',
-    iconBackground: getColor('success'),
-    iconColor: getColor('on-success'),
+    iconBackground: getColor('danger'),
+    iconColor: getColor('on-danger'),
   },
   {
     id: 'ongoingProjects',
-    title: 'Ongoing project',
-    value: '15',
+    title: 'Nhập chuồng',
+    value: '10',
     icon: 'mso-folder_open',
     changeText: '25.36%',
     changeDirection: 'up',
@@ -58,23 +58,13 @@ const dashboardMetrics = computed<DashboardMetric[]>(() => [
   },
   {
     id: 'employees',
-    title: 'Employees',
-    value: '25',
+    title: 'Trong chuồng',
+    value: '5000',
     icon: 'mso-account_circle',
     changeText: '2.5%',
     changeDirection: 'up',
-    iconBackground: getColor('danger'),
-    iconColor: getColor('on-danger'),
-  },
-  {
-    id: 'newProfit',
-    title: 'New profit',
-    value: '27%',
-    icon: 'mso-grade',
-    changeText: '4%',
-    changeDirection: 'up',
-    iconBackground: getColor('warning'),
-    iconColor: getColor('on-warning'),
+    iconBackground: getColor('success'),
+    iconColor: getColor('on-success'),
   },
 ])
 </script>

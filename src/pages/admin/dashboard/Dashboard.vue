@@ -12,14 +12,32 @@ import Timeline from './cards/Timeline.vue'
 <template>
   <h1 class="page-title font-bold">Dashboard</h1>
   <section class="flex flex-col gap-4">
+    <div>
+      <label for="local">Khu vực: </label>
+      <select class="mr-2 p-2 rounded-[10px] b" name="Khu vực" id="local" placeholder="Chọn khu vực">
+        <option value="Miền Bắc">Miền Bắc</option>
+        <option value="Miền Trung">Miền Trung</option>
+      </select>
+      <label for="city">Thành phố/Tỉnh: </label>
+      <select class="mr-2 p-2 rounded-[10px]" name="" id="city" placeholder="Chọn khu vực">
+        <option value="Miền Bắc">Miền Bắc</option>
+        <option value="Miền Trung">Miền Trung</option>
+      </select>
+      <label for="farm">Trang trại: </label>
+      <select class="mr-2 p-2 rounded-[10px]" name="Khu vực" id="farm" placeholder="Chọn khu vực">
+        <option value="Miền Bắc">Miền Bắc</option>
+        <option value="Miền Trung">Miền Trung</option>
+      </select>
+      <VaButton class="rounded-[15px] bg-red-300">Tìm kiếm</VaButton>
+    </div>
+    <DataSection />
     <div class="flex flex-col sm:flex-row gap-4">
-      <RevenueUpdates class="w-full sm:w-[70%]" />
       <div class="flex flex-col gap-4 w-full sm:w-[30%]">
         <YearlyBreakup class="h-full" />
         <MonthlyEarnings />
       </div>
+      <RevenueUpdates class="w-full sm:w-[70%]" />
     </div>
-    <DataSection />
     <div class="flex flex-col md:flex-row gap-4">
       <RevenueByLocationMap class="w-full md:w-4/6" />
       <RegionRevenue class="w-full md:w-2/6" />

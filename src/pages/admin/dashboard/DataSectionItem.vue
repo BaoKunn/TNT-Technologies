@@ -3,29 +3,36 @@
     <VaCardContent>
       <section>
         <header class="flex items-center justify-between">
-          <div class="text-lg font-semibold grow">{{ value }}</div>
+          
           <div
             class="p-1 rounded"
             :style="{
-              backgroundColor: iconBackground,
-              color: iconColor,
+              // backgroundColor: iconBackground,
+              color: iconBackground,
+              fontSize: '24px',
+              fontWeight: '700'
             }"
           >
-            <slot name="icon"></slot>
+            <div class="">{{ value }}</div>
+            <!-- <slot name="icon"></slot> -->
           </div>
         </header>
         <div>
-          <p class="mb-2">{{ title }}</p>
-          <p class="text-xs text-secondary">
+          <p class="mb-2 text-lg font-semibold">{{ title }}</p>
+          <!-- <p class="text-xs text-secondary">
             <span :class="changeClass">
               <template v-if="up">↑</template>
               <template v-else>↓</template>
               {{ changeText }}
             </span>
             since last month
-          </p>
+          </p> -->
         </div>
       </section>
+      <!-- <section>
+        <p>{{ value }}</p>
+        <p>{{ title }}</p>
+      </section> -->
     </VaCardContent>
   </VaCard>
 </template>

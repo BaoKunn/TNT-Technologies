@@ -1,24 +1,24 @@
 <template>
   <VaCard>
     <VaCardTitle class="flex justify-between">
-      <h1 class="card-title text-secondary font-bold uppercase">Revenue by Top Regions</h1>
+      <h1 class="card-title text-black text-lg uppercase">Số lượng heo ở các trạm</h1>
     </VaCardTitle>
     <VaCardContent class="flex flex-col gap-1">
       <div class="flex justify-between">
         <VaButtonToggle v-model="selectedPeriod" :options="periods" color="background-element" size="small" />
 
-        <VaButton preset="primary" size="small" @click="exportAsCSV"> Export </VaButton>
+        <!-- <VaButton preset="primary" size="small" @click="exportAsCSV"> Export </VaButton> -->
       </div>
 
       <VaDataTable
         class="region-revenue-table"
         :columns="[
-          { key: 'name', label: 'Top Region' },
-          { key: 'revenue', label: 'Revenue', align: 'right' },
+          { key: 'name', label: 'Trạm' },
+          { key: 'revenue', label: 'Số lượng'},
         ]"
         :items="data"
       >
-        <template #cell(revenue)="{ rowData }"> ${{ rowData[`revenue${selectedPeriod}`] }} </template>
+        <template #cell(revenue)="{ rowData }"> {{ rowData[`revenue${selectedPeriod}`] }} </template>
       </VaDataTable>
     </VaCardContent>
   </VaCard>
@@ -33,46 +33,46 @@ const periods = ['Today', 'Week', 'Month'].map((period) => ({ label: period, val
 
 const data = [
   {
-    name: 'Japan',
-    revenueToday: '4,748,454',
-    revenueWeek: '30,000,000',
-    revenueMonth: '120,000,000',
+    name: 'Phổ Yên',
+    revenueToday: '100',
+    revenueWeek: '8,000',
+    revenueMonth: '40,000',
   },
   {
-    name: 'United Kingdom',
-    revenueToday: '405,748',
-    revenueWeek: '2,500,000',
-    revenueMonth: '10,000,000',
+    name: 'Hà Nội',
+    revenueToday: '600',
+    revenueWeek: '4,000',
+    revenueMonth: '25,000',
   },
   {
-    name: 'United States',
-    revenueToday: '308,536',
-    revenueWeek: '1,800,000',
-    revenueMonth: '8,000,000',
+    name: 'Nghệ An',
+    revenueToday: '60',
+    revenueWeek: '500',
+    revenueMonth: '3,000',
   },
   {
-    name: 'China',
-    revenueToday: '250,963',
-    revenueWeek: '1,600,000',
-    revenueMonth: '7,000,000',
+    name: 'Tuyên Quang',
+    revenueToday: '200',
+    revenueWeek: '1,400',
+    revenueMonth: '9,000',
   },
   {
-    name: 'Canada',
-    revenueToday: '29,415',
-    revenueWeek: '180,000',
-    revenueMonth: '800,000',
+    name: 'Thái Bình',
+    revenueToday: '70',
+    revenueWeek: '2,000',
+    revenueMonth: '10,000',
   },
   {
-    name: 'Australia',
-    revenueToday: '15,000',
-    revenueWeek: '100,000',
-    revenueMonth: '500,000',
+    name: 'Nam Định',
+    revenueToday: '100',
+    revenueWeek: '700',
+    revenueMonth: '1,400',
   },
   {
-    name: 'India',
-    revenueToday: '10,000',
-    revenueWeek: '50,000',
-    revenueMonth: '200,000',
+    name: 'Hưng Yên',
+    revenueToday: '200',
+    revenueWeek: '2,400',
+    revenueMonth: '20,000',
   },
 ]
 

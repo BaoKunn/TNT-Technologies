@@ -1,22 +1,22 @@
 <template>
   <VaCard>
     <VaCardTitle>
-      <h1 class="card-title text-tag text-secondary font-bold uppercase">Monthly Earnings</h1>
+      <h1 class=" font-bold uppercase text-lg text-black">Số lượng nhập/xuất chuồng trong tuần</h1>
     </VaCardTitle>
     <VaCardContent>
-      <div class="p-1 bg-black rounded absolute right-4 top-4">
+      <!-- <div class="p-1 bg-black rounded absolute right-4 top-4">
         <VaIcon name="mso-attach_money" color="#fff" size="large" />
-      </div>
-      <section>
+      </div> -->
+      <!-- <section>
         <div class="text-xl font-bold mb-2">$6,820</div>
         <p class="text-xs text-success">
           <VaIcon name="arrow_upward" />
           25.36%
           <span class="text-secondary"> last month</span>
         </p>
-      </section>
-      <div class="w-full flex items-center">
-        <VaChart :data="chartData" class="h-24" type="line" :options="options" />
+      </section> -->
+      <div class="w-full flex items-center h-[200px]">
+        <VaChart :data="chartData" class="h-32" type="line" :options="options" />
       </div>
     </VaCardContent>
   </VaCard>
@@ -34,18 +34,18 @@ const chartData = useChartData(lineChartData)
 const options: ChartOptions<'line'> = {
   scales: {
     x: {
-      display: false,
+      display: true,
       grid: {
-        display: false, // Disable X-axis grid lines ("net")
+        display: true, // Disable X-axis grid lines ("net")
       },
     },
     y: {
-      display: false,
+      display: true,
       grid: {
-        display: false, // Disable Y-axis grid lines ("net")
+        display: true, // Disable Y-axis grid lines ("net")
       },
       ticks: {
-        display: false, // Hide Y-axis values
+        display: true, // Hide Y-axis values
       },
     },
   },
@@ -55,7 +55,8 @@ const options: ChartOptions<'line'> = {
   },
   plugins: {
     legend: {
-      display: false,
+      display: true,
+      position: 'bottom',
     },
     tooltip: {
       enabled: true,

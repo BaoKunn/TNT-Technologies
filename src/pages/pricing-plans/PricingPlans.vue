@@ -1,11 +1,7 @@
 <template>
-  <h1 class="page-title">Choose your plan</h1>
-  <div class="py-4 text-lg leading-[26px]">
-    If you need more info about our pricing, please check
-    <span class="text-primary underline">Pricing Guidelines</span>.
-  </div>
+  <h1 class="page-title">Biểu đồ trong chuồng</h1>
   <div class="flex flex-col p-4 bg-backgroundSecondary">
-    <div class="flex justify-center">
+    <!-- <div class="flex justify-center">
       <VaButtonToggle
         v-model="selectedDuration"
         color="background-element"
@@ -15,8 +11,8 @@
           { label: 'Annual', value: 'Annual' },
         ]"
       />
-    </div>
-    <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-x-6 md:space-y-0 mt-6">
+    </div> -->
+    <!-- <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-x-6 md:space-y-0 mt-6">
       <VaCard
         v-for="plan in pricingPlans"
         :key="plan.model"
@@ -68,7 +64,7 @@
           </div>
         </div>
       </VaCard>
-    </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts" setup>

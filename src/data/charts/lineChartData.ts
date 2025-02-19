@@ -2,24 +2,23 @@ import { TLineChartData } from '../types'
 
 export const lineChartData: TLineChartData = {
   labels: [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    'Thứ 2',
+    'Thứ 3',
+    'Thứ 4',
+    'Thứ 5',
+    'Thứ 6',
+    'Thứ 7',
+    'Chủ Nhật'
   ],
   datasets: [
     {
-      label: 'Monthly Earnings',
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      data: [10, 35, 14, 17, 12, 40, 75, 55, 30, 51, 25, 7], // Random values
+      label: 'Nhập chuồng',
+      data: [10, 35, 80, 20, 30, 60, 10], // Random values
     },
+    {
+      label: 'Xuất chuồng',
+      data: [20, 45, 30, 50, 80, 20, 40], // Random values
+    },
+    
   ],
 }

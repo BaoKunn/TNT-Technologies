@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-3">
+  <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 gap-4">
     <DataSectionItem
       v-for="metric in dashboardMetrics"
       :key="metric.id"
@@ -39,7 +39,7 @@ const dashboardMetrics = computed<DashboardMetric[]>(() => [
   {
     id: 'openInvoices',
     title: 'Xuất chuồng',
-    value: '1000',
+    value: '519',
     icon: 'mso-attach_money',
     changeText: '$1, 450',
     changeDirection: 'down',
@@ -49,7 +49,7 @@ const dashboardMetrics = computed<DashboardMetric[]>(() => [
   {
     id: 'ongoingProjects',
     title: 'Nhập chuồng',
-    value: '10',
+    value: '4913',
     icon: 'mso-folder_open',
     changeText: '25.36%',
     changeDirection: 'up',
@@ -57,9 +57,19 @@ const dashboardMetrics = computed<DashboardMetric[]>(() => [
     iconColor: getColor('on-info'),
   },
   {
+    id: 'employee',
+    title: 'Nhập trả lại',
+    value: '244',
+    icon: 'mso-account_circle',
+    changeText: '2.5%',
+    changeDirection: 'up',
+    iconBackground: getColor('warning'),
+    iconColor: getColor('on-warning'),
+  },
+  {
     id: 'employees',
     title: 'Trong chuồng',
-    value: '5000',
+    value: '76',
     icon: 'mso-account_circle',
     changeText: '2.5%',
     changeDirection: 'up',

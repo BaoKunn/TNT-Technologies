@@ -32,11 +32,11 @@ import Timeline from './cards/Timeline.vue'
     </div>
     <DataSection />
     <div class="flex flex-col sm:flex-row gap-4">
-      <div class="flex flex-col gap-4 w-full sm:w-[50%]">
+      <div class="flex flex-col gap-4 w-full grid grid-cols-1 sm:grid-cols-1">
         <MonthlyEarnings/>
-        <YearlyBreakup class="h-full" />
+        <YearlyBreakup/>
       </div>
-      <RevenueUpdates class="w-full sm:w-[50%]" />
+      <RevenueUpdates class="w-full grid grid-cols-1 sm:grid-cols-1" />
     </div>
     <div class="flex flex-col md:flex-row gap-4">
       <ProjectTable class="w-full sm:w-[50%]" />

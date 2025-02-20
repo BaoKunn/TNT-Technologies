@@ -1,7 +1,27 @@
 <template>
   <h1 class="page-title">Biểu đồ trong chuồng</h1>
-  <div class="flex flex-col p-4 bg-backgroundSecondary">
-    <!-- <div class="flex justify-center">
+  <div class="mb-4">
+    <label for="local">Khu vực: </label>
+    <select class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" id="local" placeholder="Chọn khu vực">
+      <option value="Miền Bắc">Miền Bắc</option>
+      <option value="Miền Trung">Miền Trung</option>
+    </select>
+    <label for="city">Thành phố/Tỉnh: </label>
+    <select class="mr-2 p-2 rounded-[10px] cursor-pointer" name="" id="city" placeholder="Chọn khu vực">
+      <option value="Hà Nội">Hà Nội</option>
+      <option value="Thái Nguyên">Thái Nguyên</option>
+    </select>
+    <label for="farm">Trang trại: </label>
+    <select class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" id="farm" placeholder="Chọn khu vực">
+      <option value="Farm 1">Farm 1</option>
+      <option value="Farm 2">Farm 2</option>
+    </select>
+    <label for="time">Thời gian: </label>
+    <VaDateInput id="time" v-model="date" class="mr-2 w-[140px] rounded-[10px]" />
+    <VaButton class="rounded-[15px] bg-red-300">Tìm kiếm<VaIcon name="vasearch" /></VaButton>
+  </div>
+  <!-- <div class="flex flex-col p-4 bg-backgroundSecondary">
+    <div class="flex justify-center">
       <VaButtonToggle
         v-model="selectedDuration"
         color="background-element"
@@ -11,8 +31,8 @@
           { label: 'Annual', value: 'Annual' },
         ]"
       />
-    </div> -->
-    <!-- <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-x-6 md:space-y-0 mt-6">
+    </div>
+    <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-x-6 md:space-y-0 mt-6">
       <VaCard
         v-for="plan in pricingPlans"
         :key="plan.model"
@@ -64,35 +84,65 @@
           </div>
         </div>
       </VaCard>
-    </div> -->
-  </div>
+    </div>
+  </div> -->
+  <VaCard class="mb-6">
+    <VaCardContent>
+      <h1 class="text-xl font-bold mb-4">Biểu đồ số lợn trong chuồng số 1 theo ngày</h1>
+      <div>
+        <VaChart :data="chartData" type="bar" :options="options" />
+      </div>
+    </VaCardContent>
+  </VaCard>
+  <VaCard class="mb-6">
+    <VaCardContent>
+      <h1 class="text-xl font-bold mb-4">Biểu đồ số lợn trong chuồng số 1 theo tháng</h1>
+      <div>
+        <VaChart :data="chartData" type="bar" :options="options" />
+      </div>
+    </VaCardContent>
+  </VaCard>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useToast, useModal } from 'vuestic-ui'
+import { useChartData } from '../../data/charts/composables/useChartData';
+import { barChartData } from '../../data/charts';
+import { ChartOptions } from 'chart.js';
+import VaChart from '../../components/va-charts/VaChart.vue';
 
-import { badgeStyles, selectButtonStyles } from './styles'
+const chartData = useChartData(barChartData)
 
-import { pricingPlans } from './options'
-
-const { init } = useToast()
-const { init: initModal } = useModal()
-
-const selectedDuration = ref<string>('Annual')
-const selectedPlan = ref<string>()
-
-const createModal = (planModel: string) => {
-  initModal({
-    message: 'Are you sure you want to change plan?',
-    mobileFullscreen: false,
-    maxWidth: '380px',
-    size: 'small',
-    onOk: () => selectPlan(planModel),
-  })
+const options: ChartOptions<'bar'> = {
+  scales: {
+    x: {
+      display: true,
+      grid: {
+        display: true, // Disable X-axis grid lines ("net")
+      },
+    },
+    y: {
+      display: true,
+      grid: {
+        display: true, // Disable Y-axis grid lines ("net")
+      },
+      ticks: {
+        display: true, // Hide Y-axis values
+      },
+    },
+  },
+  interaction: {
+    intersect: false,
+    mode: 'index',
+  },
+  plugins: {
+    legend: {
+      display: true,
+      position: 'bottom',
+    },
+    tooltip: {
+      enabled: true,
+    },
+  },
 }
 
-const selectPlan = (planModel: string) => {
-  init({ message: 'You successfully changed payment plan!', color: 'success' })
-  selectedPlan.value = planModel
-}
+const date = new Date()
 </script>

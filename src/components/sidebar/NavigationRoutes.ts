@@ -92,19 +92,19 @@ export default {
       ],
     },
     {
-      name: 'auth',
-      displayName: 'menu.auth',
+      name: 'chart-data',
+      displayName: 'menu.chart-data',
       meta: {
         icon: 'login',
       },
       children: [
         {
-          name: 'login',
-          displayName: 'menu.login',
+          name: 'in-out',
+          displayName: 'menu.in-out',
         },
         {
-          name: 'signup',
-          displayName: 'menu.signup',
+          name: 'farm',
+          displayName: 'menu.farm',
         },
       ],
     },

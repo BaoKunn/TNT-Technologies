@@ -54,7 +54,10 @@
     "404": "404",
     "faq": "FAQ",
     "users": "Users",
-    "projects": "Projects"
+    "projects": "Projects",
+    "chart-data": "Bảng số liệu",
+    "in-out": "Xuất - Nhập",
+    "farm": "Trong chuồng"
   },
   "messages": {
     "all": "See all messages",

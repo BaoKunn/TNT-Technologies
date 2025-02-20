@@ -64,6 +64,23 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       {
+        name: 'chart-data',
+        path: '/chart-data',
+        component: RouteViewComponent,
+        children: [
+          {
+            name: 'in-out',
+            path: 'in-out',
+            component: () => import('../pages/chart-data/ChartData.vue'),
+          },
+          {
+            name: 'farm',
+            path: 'farm',
+            component: () => import('../pages/farm-data/FarmDataTable.vue'),
+          },
+        ],
+      },
+      {
         name: 'faq',
         path: '/faq',
         component: () => import('../pages/faq/FaqPage.vue'),

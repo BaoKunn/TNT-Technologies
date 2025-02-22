@@ -38,4 +38,12 @@
 
 <script lang="ts" setup>
 import { VaCard } from 'vuestic-ui'
+defineProps<{
+  title: string
+  value: string | number
+  changeText: string
+  up: boolean
+  iconBackground: string
+  iconColor: string
+}>()
 </script>

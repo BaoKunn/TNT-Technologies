@@ -30,10 +30,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
 import { VaCard } from 'vuestic-ui'
 import VaChart from '../../../../components/va-charts/VaChart.vue'
-import { useChartData } from '../../../../data/charts/composables/useChartData'
 import { ChartOptions } from 'chart.js'
 let delayed: boolean
 const current = new Date()

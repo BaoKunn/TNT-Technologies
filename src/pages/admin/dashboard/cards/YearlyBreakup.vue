@@ -1,7 +1,7 @@
 <template>
   <VaCard>
     <VaCardTitle>
-      <h1 class=" font-bold uppercase text-lg text-black">Số lượng heo chuồng trong tuần</h1>
+      <h1 class="font-bold uppercase text-lg text-black">Số lượng heo chuồng trong tuần</h1>
     </VaCardTitle>
     <VaCardContent>
       <!-- <div class="p-1 bg-black rounded absolute right-4 top-4">

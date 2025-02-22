@@ -14,17 +14,17 @@ import Timeline from './cards/Timeline.vue'
   <section class="flex flex-col gap-4">
     <div>
       <label for="local">Khu vực: </label>
-      <select class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" id="local" placeholder="Chọn khu vực">
+      <select id="local" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" placeholder="Chọn khu vực">
         <option value="Miền Bắc">Miền Bắc</option>
         <option value="Miền Trung">Miền Trung</option>
       </select>
       <label for="city">Thành phố/Tỉnh: </label>
-      <select class="mr-2 p-2 rounded-[10px] cursor-pointer" name="" id="city" placeholder="Chọn khu vực">
+      <select id="city" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="" placeholder="Chọn khu vực">
         <option value="Hà Nội">Hà Nội</option>
         <option value="Thái Nguyên">Thái Nguyên</option>
       </select>
       <label for="farm">Trang trại: </label>
-      <select class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" id="farm" placeholder="Chọn khu vực">
+      <select id="farm" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" placeholder="Chọn khu vực">
         <option value="Farm 1">Farm 1</option>
         <option value="Farm 2">Farm 2</option>
       </select>
@@ -33,8 +33,8 @@ import Timeline from './cards/Timeline.vue'
     <DataSection />
     <div class="flex flex-col sm:flex-row gap-4">
       <div class="flex flex-col gap-4 w-full grid grid-cols-1 sm:grid-cols-1">
-        <MonthlyEarnings/>
-        <YearlyBreakup/>
+        <MonthlyEarnings />
+        <YearlyBreakup />
       </div>
       <RevenueUpdates class="w-full grid grid-cols-1 sm:grid-cols-1" />
     </div>
@@ -46,6 +46,5 @@ import Timeline from './cards/Timeline.vue'
       <RevenueByLocationMap class="w-full md:w-4/6" />
       <RegionRevenue class="w-full md:w-2/6" />
     </div>
-    
   </section>
 </template>

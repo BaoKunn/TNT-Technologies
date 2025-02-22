@@ -9,13 +9,16 @@ import { createGtm } from '@gtm-support/vue-gtm'
 import stores from './stores'
 import router from './router'
 import vuesticGlobalConfig from './services/vuestic-ui/global-config'
+import { createPinia } from 'pinia'
 
 const app = createApp(App)
+const pinia = createPinia()
 
 app.use(stores)
 app.use(router)
 app.use(i18n)
 app.use(createVuestic({ config: vuesticGlobalConfig }))
+app.use(pinia)
 
 if (import.meta.env.VITE_APP_GTM_ENABLED) {
   app.use(

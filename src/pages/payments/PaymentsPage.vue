@@ -2,17 +2,17 @@
   <h1 class="page-title">Biểu đồ xuất nhập</h1>
   <div class="mb-4">
     <label for="local">Khu vực: </label>
-    <select class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" id="local" placeholder="Chọn khu vực">
+    <select id="local" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" placeholder="Chọn khu vực">
       <option value="Miền Bắc">Miền Bắc</option>
       <option value="Miền Trung">Miền Trung</option>
     </select>
     <label for="city">Thành phố/Tỉnh: </label>
-    <select class="mr-2 p-2 rounded-[10px] cursor-pointer" name="" id="city" placeholder="Chọn khu vực">
+    <select id="city" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="" placeholder="Chọn khu vực">
       <option value="Hà Nội">Hà Nội</option>
       <option value="Thái Nguyên">Thái Nguyên</option>
     </select>
     <label for="farm">Trang trại: </label>
-    <select class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" id="farm" placeholder="Chọn khu vực">
+    <select id="farm" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" placeholder="Chọn khu vực">
       <option value="Farm 1">Farm 1</option>
       <option value="Farm 2">Farm 2</option>
     </select>
@@ -50,8 +50,6 @@
 </template>
 
 <script lang="ts" setup>
-import PaymentCardList from './widgets/my-cards/PaymentCardList.vue'
-import BillingAddressList from './widgets/billing-address/BillingAddressList.vue'
 import { VaDateInput, VaIcon } from 'vuestic-ui'
 import VaChart from '../../components/va-charts/VaChart.vue'
 import { barChartData } from '../../data/charts'

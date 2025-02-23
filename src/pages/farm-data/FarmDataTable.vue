@@ -21,56 +21,48 @@
     <VaButton class="rounded-[15px] bg-red-300">Tìm kiếm<VaIcon name="vasearch" /></VaButton>
   </div>
   <VaCard class="mb-6">
-    <VaCardContent>
-      <DataTable :columns="columns" :data="data" :options="options" class="display nowrap"
-        ><template #column-extn="props"> <Button :text="`Extn: ${props.cellData}`"></Button> </template
-      ></DataTable>
-    </VaCardContent>
+    <VaCardContent> </VaCardContent>
   </VaCard>
+  <ATable :data-source="dataSource" :columns="columns" />
 </template>
 
-<script lang="ts" setup>
-import { VaDateInput, VaIcon } from 'vuestic-ui'
-import DataTable from 'datatables.net-vue3'
-import DataTablesCore from 'datatables.net-dt'
-import 'datatables.net-select-dt'
-import 'datatables.net-responsive-dt'
-import axios from 'axios'
-import { onMounted } from 'vue'
+<script>
+export default {
+  setup() {
+    return {
+      dataSource: [
+        {
+          key: '1',
+          name: 'Mike',
+          age: 32,
+          address: '10 Downing Street',
+        },
+        {
+          key: '2',
+          name: 'John',
+          age: 42,
+          address: '10 Downing Street',
+        },
+      ],
 
-DataTable.use(DataTablesCore)
-
-onMounted(() => {
-  axios.get('http://farmapidev.tnt-tech.vn/api/FARMHOUSEs/2')
-})
-
-const date = new Date()
-const columns = [
-  { data: 'stt', title: 'STT' },
-  { data: 'day', title: 'Ngày' },
-  { data: 'farm', title: 'Trại' },
-  { data: 'cage', title: 'Chuồng' },
-  { data: 'equiment', title: 'Thiết bị' },
-  { data: 'quantity', title: 'Số lượng' },
-]
-const data = [
-  { stt: '1', day: '2024-08-12 18:30:00', farm: 'Phổ Yên', cage: '1', equiment: 'Counting Box 1', quantity: 123 },
-  { stt: '2', day: '2024-08-11 18:30:00', farm: 'Hà Nội', cage: '2', equiment: 'Counting Box 2', quantity: 270 },
-  { stt: '3', day: '2024-08-10 18:30:00', farm: 'Phú Thọ', cage: '3', equiment: 'Counting Box 3', quantity: 178 },
-  { stt: '4', day: '2024-08-09 18:30:00', farm: 'Hưng Yên', cage: '4', equiment: 'Counting Box 4', quantity: 167 },
-  { stt: '5', day: '2024-08-08 18:30:00', farm: 'Nam Định', cage: '5', equiment: 'Counting Box 5', quantity: 194 },
-  { stt: '6', day: '2024-08-07 18:30:00', farm: 'Thái Bình', cage: '6', equiment: 'Counting Box 6', quantity: 98 },
-  { stt: '7', day: '2024-08-06 18:30:00', farm: 'Bắc Ninh', cage: '7', equiment: 'Counting Box 7', quantity: 45 },
-  { stt: '8', day: '2024-08-05 18:30:00', farm: 'Hải Phòng', cage: '8', equiment: 'Counting Box 8', quantity: 78 },
-  { stt: '9', day: '2024-08-04 18:30:00', farm: 'Hải Phòng', cage: '9', equiment: 'Counting Box 9', quantity: 245 },
-  { stt: '10', day: '2024-08-03 18:30:00', farm: 'Ninh Bình', cage: '10', equiment: 'Counting Box 10', quantity: 41 },
-  { stt: '11', day: '2024-08-02 18:30:00', farm: 'Hòa Bình', cage: '11', equiment: 'Counting Box 11', quantity: 123 },
-]
-const options = {
-  responsive: true,
-  select: true,
+      columns: [
+        {
+          title: 'Name',
+          dataIndex: 'name',
+          key: 'name',
+        },
+        {
+          title: 'Age',
+          dataIndex: 'age',
+          key: 'age',
+        },
+        {
+          title: 'Address',
+          dataIndex: 'address',
+          key: 'address',
+        },
+      ],
+    }
+  },
 }
 </script>
-<style>
-@import 'datatables.net-dt';
-</style>

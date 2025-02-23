@@ -7,28 +7,14 @@ import YearlyBreakup from './cards/YearlyBreakup.vue'
 import MonthlyEarnings from './cards/MonthlyEarnings.vue'
 import RegionRevenue from './cards/RegionRevenue.vue'
 import Timeline from './cards/Timeline.vue'
+import Filter from '../../../components/filter/Filter.vue'
 </script>
 
 <template>
   <h1 class="page-title font-bold">Dashboard</h1>
   <section class="flex flex-col gap-4">
     <div>
-      <label for="local">Khu vực: </label>
-      <select id="local" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" placeholder="Chọn khu vực">
-        <option value="Miền Bắc">Miền Bắc</option>
-        <option value="Miền Trung">Miền Trung</option>
-      </select>
-      <label for="city">Thành phố/Tỉnh: </label>
-      <select id="city" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="" placeholder="Chọn khu vực">
-        <option value="Hà Nội">Hà Nội</option>
-        <option value="Thái Nguyên">Thái Nguyên</option>
-      </select>
-      <label for="farm">Trang trại: </label>
-      <select id="farm" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" placeholder="Chọn khu vực">
-        <option value="Farm 1">Farm 1</option>
-        <option value="Farm 2">Farm 2</option>
-      </select>
-      <VaButton class="rounded-[15px] bg-red-300">Tìm kiếm</VaButton>
+      <Filter />
     </div>
     <DataSection />
     <div class="flex flex-col sm:flex-row gap-4">

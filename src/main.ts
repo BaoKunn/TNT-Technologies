@@ -5,6 +5,7 @@ import App from './App.vue'
 import i18n from './i18n'
 import { createVuestic } from 'vuestic-ui'
 import { createGtm } from '@gtm-support/vue-gtm'
+import Antd from 'ant-design-vue'
 
 import stores from './stores'
 import router from './router'
@@ -19,6 +20,7 @@ app.use(router)
 app.use(i18n)
 app.use(createVuestic({ config: vuesticGlobalConfig }))
 app.use(pinia)
+app.use(Antd)
 
 if (import.meta.env.VITE_APP_GTM_ENABLED) {
   app.use(

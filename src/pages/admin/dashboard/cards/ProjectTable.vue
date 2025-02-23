@@ -1,53 +1,51 @@
-<script setup lang="ts">
-import DataTable from 'datatables.net-vue3'
-import DataTablesCore from 'datatables.net-dt'
+<script>
+export default {
+  setup() {
+    return {
+      dataSource: [
+        {
+          key: '1',
+          name: 'Mike',
+          age: 32,
+          address: '10 Downing Street',
+        },
+        {
+          key: '2',
+          name: 'John',
+          age: 42,
+          address: '10 Downing Street',
+        },
+      ],
 
-DataTable.use(DataTablesCore)
-
-// const columns = defineVaDataTableColumns([
-//   { label: 'Name', key: 'project_name', sortable: true },
-//   { label: 'Status', key: 'status', sortable: true },
-//   { label: 'Team', key: 'team', sortable: true },
-// ])
-
-const data = [
-  [1, '19/2/2025', 'Phổ Yên', 1, 100],
-  [2, '20/2/2025', 'Phổ Yên', 2, 200],
-  [3, '21/2/2025', 'Phổ Yên', 3, 300],
-  [4, '22/2/2025', 'Phổ Yên', 4, 400],
-  [5, '23/2/2025', 'Phổ Yên', 5, 500],
-  [5, '23/2/2025', 'Phổ Yên', 5, 500],
-  [5, '23/2/2025', 'Phổ Yên', 5, 500],
-  [5, '23/2/2025', 'Phổ Yên', 5, 500],
-  [5, '23/2/2025', 'Phổ Yên', 5, 500],
-  [5, '23/2/2025', 'Phổ Yên', 5, 500],
-  [5, '23/2/2025', 'Phổ Yên', 5, 500],
-  [5, '23/2/2025', 'Phổ Yên', 5, 500],
-  [5, '23/2/2025', 'Phổ Yên', 5, 500],
-]
+      columns: [
+        {
+          title: 'Name',
+          dataIndex: 'name',
+          key: 'name',
+        },
+        {
+          title: 'Age',
+          dataIndex: 'age',
+          key: 'age',
+        },
+        {
+          title: 'Address',
+          dataIndex: 'address',
+          key: 'address',
+        },
+      ],
+    }
+  },
+}
 </script>
 
 <template>
   <VaCard>
     <VaCardTitle class="flex items-start justify-between">
       <h1 class="font-bold uppercase text-lg text-black">Bảng số lượng lợn xuất/nhập chuồng</h1>
-      <!-- <VaButton preset="primary" size="small" to="/projects">View all projects</VaButton> -->
     </VaCardTitle>
     <VaCardContent>
-      <DataTable :data="data" class="cell-border stripe hover" style="border: 1px solid">
-        <thead>
-          <tr>
-            <th>STT</th>
-            <th>Ngày</th>
-            <th>Trại</th>
-            <th>Cửa</th>
-            <th>Số lượng</th>
-          </tr>
-        </thead>
-      </DataTable>
+      <ATable :data-source="dataSource" :columns="columns" bordered />
     </VaCardContent>
   </VaCard>
 </template>
-<style>
-@import 'datatables.net-dt';
-</style>

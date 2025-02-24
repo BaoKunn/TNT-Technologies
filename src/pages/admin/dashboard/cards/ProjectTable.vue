@@ -1,40 +1,46 @@
 <script>
-export default {
-  setup() {
-    return {
-      dataSource: [
-        {
-          key: '1',
-          name: 'Mike',
-          age: 32,
-          address: '10 Downing Street',
-        },
-        {
-          key: '2',
-          name: 'John',
-          age: 42,
-          address: '10 Downing Street',
-        },
-      ],
+import axios from 'axios'
+import dayjs from 'dayjs'
 
+export default {
+  data() {
+    return {
+      dataSource: [],
       columns: [
         {
-          title: 'Name',
-          dataIndex: 'name',
-          key: 'name',
+          title: 'STT',
+          dataIndex: 'STT',
+          width: '10%',
         },
         {
-          title: 'Age',
-          dataIndex: 'age',
-          key: 'age',
+          title: 'Ngày',
+          dataIndex: 'BillDate',
         },
         {
-          title: 'Address',
-          dataIndex: 'address',
-          key: 'address',
+          title: 'Trại',
+          dataIndex: 'FarmhouseID',
+        },
+        {
+          title: 'Cửa',
+          dataIndex: 'GateID',
+          width: '10%',
+        },
+        {
+          title: 'Khách hàng',
+          dataIndex: 'CustomerID',
         },
       ],
     }
+  },
+  mounted() {
+    axios.get('https://farmapidev.tnt-tech.vn/api/BILLs?UsersID=1&BillImport=1').then((response) => {
+      // Xử lý và format ngày cùng giờ trước khi lưu vào dataSource
+      this.dataSource = response.data.map((item, index) => ({
+        ...item,
+        STT: index + 1, // Thêm số thứ tự bắt đầu từ 1
+        BillDate: dayjs(item.BillDate).format('DD-MM-YYYY (hh:mm A)'), // Định dạng lại ngày và giờ
+      }))
+    })
   },
 }
 </script>
@@ -45,7 +51,22 @@ export default {
       <h1 class="font-bold uppercase text-lg text-black">Bảng số lượng lợn xuất/nhập chuồng</h1>
     </VaCardTitle>
     <VaCardContent>
-      <ATable :data-source="dataSource" :columns="columns" bordered />
+      <ATable
+        class="ant-table-striped"
+        :data-source="dataSource"
+        :columns="columns"
+        bordered
+        :scroll="{ y: 300 }"
+      />
     </VaCardContent>
   </VaCard>
 </template>
+
+<style scoped>
+[data-doc-theme='light'] .ant-table-striped :deep(.table-striped) td {
+  background-color: #fafafa;
+}
+[data-doc-theme='dark'] .ant-table-striped :deep(.table-striped) td {
+  background-color: rgb(29, 29, 29);
+}
+</style>

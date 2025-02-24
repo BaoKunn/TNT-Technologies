@@ -24,9 +24,9 @@ import Filter from '../../../components/filter/Filter.vue'
       </div>
       <RevenueUpdates class="w-full grid grid-cols-1 sm:grid-cols-1" />
     </div>
-    <div class="flex flex-col md:flex-row gap-4">
-      <ProjectTable class="w-full sm:w-[50%]" />
-      <Timeline class="w-full sm:w-[50%]" />
+    <div class="flex flex-col lg:flex-row gap-4">
+      <ProjectTable class="w-full sm:w-[100%] lg:w-[50%]" />
+      <Timeline class="w-full sm:w-[100%] lg:w-[50%]" />
     </div>
     <div class="flex flex-col md:flex-row gap-4">
       <RevenueByLocationMap class="w-full md:w-4/6" />

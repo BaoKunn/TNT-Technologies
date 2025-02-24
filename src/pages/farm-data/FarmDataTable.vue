@@ -21,9 +21,8 @@
     <VaButton class="rounded-[15px] bg-red-300">Tìm kiếm<VaIcon name="vasearch" /></VaButton>
   </div>
   <VaCard class="mb-6">
-    <VaCardContent> </VaCardContent>
+    <VaCardContent><ATable :data-source="dataSource" :columns="columns" /></VaCardContent>
   </VaCard>
-  <ATable :data-source="dataSource" :columns="columns" />
 </template>
 
 <script>

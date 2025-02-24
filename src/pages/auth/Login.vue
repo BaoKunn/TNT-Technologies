@@ -1,16 +1,15 @@
 <template>
-  <VaForm ref="form" @submit.prevent="submit">
+  <VaForm ref="form" @submit.prevent="submit" class="p-[24px] rounded-xl bg-[var(--va-background-secondary)]">
     <h1 class="font-semibold text-4xl mb-4">Log in</h1>
     <p class="text-base mb-4 leading-5">
-      New to Vuestic?
       <RouterLink :to="{ name: 'signup' }" class="font-semibold text-primary">Sign up</RouterLink>
     </p>
     <VaInput
-      v-model="formData.email"
-      :rules="[validators.required, validators.email]"
+      v-model="formData.username"
+      :rules="[validators.required]"
       class="mb-4"
-      label="Email"
-      type="email"
+      label="Username"
+      type="text"
     />
     <VaValue v-slot="isPasswordVisible" :default-value="false">
       <VaInput
@@ -48,6 +47,7 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
+import axios from 'axios'
 import { validators } from '../../services/utils'
 
 const { validate } = useForm('form')
@@ -55,15 +55,44 @@ const { push } = useRouter()
 const { init } = useToast()
 
 const formData = reactive({
-  email: '',
+  username: '',
   password: '',
   keepLoggedIn: false,
 })
 
-const submit = () => {
+const submit = async () => {
   if (validate()) {
-    init({ message: "You've successfully logged in", color: 'success' })
-    push({ name: 'dashboard' })
+  //   try {
+  //     // Gọi API đăng nhập
+  //     const response = await axios.get(`https://farmapidev.tnt-tech.vn/api/USER/Login?UserName=${formData.email}&Password=${formData.password}`)
+
+  //     if (response.status == 200) {
+  //       // Hiển thị thông báo thành công và chuyển hướng đến dashboard
+  //       init({ message: "You've successfully logged in", color: 'success' })
+  //       push({ name: 'dashboard' })
+  //     } else {
+  //       // Hiển thị thông báo lỗi nếu không thành công
+  //       init({ message: response.data.message || 'Login failed', color: 'danger' })
+  //     }
+  //   } catch (error) {
+  //     // Xử lý lỗi nếu có
+  //     init({ message: 'An error occurred while logging in', color: 'danger' })
+  //   }
+  // }
+  try {
+      if (formData.username == 'bk' && formData.password == '1') {
+        // Hiển thị thông báo thành công và chuyển hướng đến dashboard
+        init({ message: "You've successfully logged in", color: 'success' })
+        push({ name: 'dashboard' })
+      } else {
+        // Hiển thị thông báo lỗi nếu không thành công
+        init({ message: 'Login failed', color: 'danger' })
+        // init({ message: response.data.message || 'Login failed', color: 'danger' })
+      }
+    } catch (error) {
+      // Xử lý lỗi nếu có
+      init({ message: 'An error occurred while logging in', color: 'danger' })
+    }
   }
 }
 </script>

@@ -74,6 +74,11 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import('../pages/chart-data/ChartData.vue'),
           },
           {
+            name: 'in-out-detail',
+            path: 'in-out/detail/:id',
+            component: () => import('../pages/chart-data/detail/DataTableDetail.vue'),
+          },
+          {
             name: 'farm',
             path: 'farm',
             component: () => import('../pages/farm-data/FarmDataTable.vue'),

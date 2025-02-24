@@ -1,13 +1,14 @@
 <template>
-  <VaLayout v-if="breakpoint.lgUp" class="h-screen bg-[var(--va-background-secondary)]">
+  <VaLayout v-if="breakpoint.lgUp" class="h-screen bg-[url(../../public/1.jpg)]">
     <template #left>
       <RouterLink
-        class="bg-primary h-full flex items-center justify-center"
+        class="h-full flex items-center justify-center"
         style="width: 35vw"
-        to="/"
+        to=""
         aria-label="Visit homepage"
       >
-        <VuesticLogo :height="28" start="#FFF" />
+        <!-- <VuesticLogo :height="28" start="#FFF" /> -->
+         <!-- <img class="h-[200px]" src="../../public/3.png" alt=""> -->
       </RouterLink>
     </template>
     <template #content>

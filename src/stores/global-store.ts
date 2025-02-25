@@ -4,6 +4,7 @@ export const useGlobalStore = defineStore('global', {
   state: () => {
     return {
       isSidebarMinimized: false,
+      userId: ''
     }
   },
 
@@ -11,5 +12,8 @@ export const useGlobalStore = defineStore('global', {
     toggleSidebar() {
       this.isSidebarMinimized = !this.isSidebarMinimized
     },
+    setUserID(id: string) {
+      this.userId = id
+    }
   },
 })

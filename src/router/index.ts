@@ -4,6 +4,7 @@ import AuthLayout from '../layouts/AuthLayout.vue'
 import AppLayout from '../layouts/AppLayout.vue'
 
 import RouteViewComponent from '../layouts/RouterBypass.vue'
+import { useGlobalStore } from '../stores/global-store'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -42,8 +43,8 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('../pages/projects/ProjectsPage.vue'),
       },
       {
-        name: 'payments',
-        path: '/payments',
+        name: 'chart-data',
+        path: '/chart-data',
         component: RouteViewComponent,
         children: [
           {
@@ -64,8 +65,8 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       {
-        name: 'chart-data',
-        path: '/chart-data',
+        name: 'table-data',
+        path: '/table-data',
         component: RouteViewComponent,
         children: [
           {
@@ -143,6 +144,22 @@ const router = createRouter({
     }
   },
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  const store = useGlobalStore()
+
+  // Nếu userId trống và người dùng không đang ở trang login, chuyển hướng đến trang login
+  if (store.userId === '' && to.name !== 'login' && to.path !== '/auth/login') {
+    // Thêm một check để tránh trường hợp đang trong quá trình điều hướng, tránh vòng lặp
+    if (from.name === 'login') {
+      next()  // Nếu đang từ trang login, không điều hướng thêm
+    } else {
+      next({ name: 'login' })  // Chuyển hướng đến trang login
+    }
+  } else {
+    next()  // Cho phép điều hướng nếu không có vấn đề gì
+  }
 })
 
 export default router

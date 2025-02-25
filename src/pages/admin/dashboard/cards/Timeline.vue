@@ -1,5 +1,7 @@
 <script>
 import axios from 'axios'
+import dayjs from 'dayjs'
+import { useGlobalStore } from '../../../../stores/global-store';
 
 export default {
   data() {
@@ -8,23 +10,28 @@ export default {
         title: 'STT',
         dataIndex: 'STT', // Sử dụng 'STT' từ dữ liệu đã xử lý
         width: '10%',
+        align: 'center'
       },
       {
         title: 'Ngày',
         dataIndex: 'BillDate',
+        align: 'center'
       },
       {
         title: 'Trại',
         dataIndex: 'FarmhouseID',
+        align: 'center'
       },
       {
         title: 'Cửa',
         dataIndex: 'GateID',
         width: '10%',
+        align: 'center'
       },
       {
         title: 'Khách hàng',
         dataIndex: 'CustomerID',
+        align: 'center'
       },
     ]
     return {
@@ -32,12 +39,18 @@ export default {
       columns,
     }
   },
+  computed: {
+    store() {
+      return useGlobalStore(); // Truy cập store ở đây
+    }
+  },
   mounted() {
-    axios.get('https://farmapidev.tnt-tech.vn/api/BILLs?UsersID=1&BillImport=3').then((response) => {
+    axios.get(`https://farmapidev.tnt-tech.vn/api/BILLs?UsersID=${this.store.userId}&BillImport=3`).then((response) => {
       // Xử lý thêm cột STT vào dữ liệu API
       this.dataSource = response.data.map((item, index) => ({
         ...item,
         STT: index + 1, // Thêm số thứ tự bắt đầu từ 1
+        BillDate: dayjs(item.BillDate).format('DD-MM-YYYY (hh:mm A)'),
       }))
     })
   },

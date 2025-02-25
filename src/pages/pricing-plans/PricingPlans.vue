@@ -1,24 +1,7 @@
 <template>
   <h1 class="page-title">Biểu đồ trong chuồng</h1>
   <div class="mb-4">
-    <label for="local">Khu vực: </label>
-    <select id="local" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" placeholder="Chọn khu vực">
-      <option value="Miền Bắc">Miền Bắc</option>
-      <option value="Miền Trung">Miền Trung</option>
-    </select>
-    <label for="city">Thành phố/Tỉnh: </label>
-    <select id="city" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="" placeholder="Chọn khu vực">
-      <option value="Hà Nội">Hà Nội</option>
-      <option value="Thái Nguyên">Thái Nguyên</option>
-    </select>
-    <label for="farm">Trang trại: </label>
-    <select id="farm" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" placeholder="Chọn khu vực">
-      <option value="Farm 1">Farm 1</option>
-      <option value="Farm 2">Farm 2</option>
-    </select>
-    <label for="time">Thời gian: </label>
-    <VaDateInput id="time" v-model="date" class="mr-2 w-[140px] rounded-[10px]" />
-    <VaButton class="rounded-[15px] bg-red-300">Tìm kiếm<VaIcon name="vasearch" /></VaButton>
+    <Filter />
   </div>
   <!-- <div class="flex flex-col p-4 bg-backgroundSecondary">
     <div class="flex justify-center">
@@ -108,6 +91,7 @@ import { useChartData } from '../../data/charts/composables/useChartData'
 import { barChartData } from '../../data/charts'
 import { ChartOptions } from 'chart.js'
 import VaChart from '../../components/va-charts/VaChart.vue'
+import Filter from '../../components/filter/Filter.vue'
 
 const chartData = useChartData(barChartData)
 

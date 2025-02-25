@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios'
 import dayjs from 'dayjs'
+import { useGlobalStore } from '../../../../stores/global-store';
 
 export default {
   data() {
@@ -11,29 +12,39 @@ export default {
           title: 'STT',
           dataIndex: 'STT',
           width: '10%',
+          align: 'center'
         },
         {
           title: 'Ngày',
           dataIndex: 'BillDate',
+          align: 'center'
         },
         {
           title: 'Trại',
           dataIndex: 'FarmhouseID',
+          align: 'center'
         },
         {
           title: 'Cửa',
           dataIndex: 'GateID',
           width: '10%',
+          align: 'center'
         },
         {
           title: 'Khách hàng',
           dataIndex: 'CustomerID',
+          align: 'center'
         },
-      ],
+      ]
+    }
+  },
+  computed: {
+    store() {
+      return useGlobalStore(); // Truy cập store ở đây
     }
   },
   mounted() {
-    axios.get('https://farmapidev.tnt-tech.vn/api/BILLs?UsersID=1&BillImport=1').then((response) => {
+    axios.get(`https://farmapidev.tnt-tech.vn/api/BILLs?UsersID=${this.store.userId}&BillImport=1`).then((response) => {
       // Xử lý và format ngày cùng giờ trước khi lưu vào dataSource
       this.dataSource = response.data.map((item, index) => ({
         ...item,

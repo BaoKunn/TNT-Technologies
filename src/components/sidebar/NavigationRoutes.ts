@@ -75,8 +75,8 @@ export default {
     //   ],
     // },
     {
-      name: 'payments',
-      displayName: 'menu.payments',
+      name: 'chart-data',
+      displayName: 'menu.chart-data',
       meta: {
         icon: 'credit_card',
       },
@@ -92,8 +92,8 @@ export default {
       ],
     },
     {
-      name: 'chart-data',
-      displayName: 'menu.chart-data',
+      name: 'table-data',
+      displayName: 'menu.table-data',
       meta: {
         icon: 'login',
       },

@@ -1,7 +1,7 @@
 <template>
   <VaCard>
     <VaCardTitle class="flex justify-between">
-      <h1 class="card-title text-black text-lg uppercase">Số lượng heo ở các trạm</h1>
+      <h1 class="card-title text-black text-lg uppercase">Số lượng heo ở các trại</h1>
     </VaCardTitle>
     <VaCardContent class="flex flex-col gap-1">
       <div class="flex justify-between">

@@ -1,5 +1,5 @@
 <template>
-  <VaLayout v-if="breakpoint.lgUp" class="h-screen bg-[url(../../public/1.jpg)]">
+  <VaLayout v-if="breakpoint.lgUp" class="h-screen bg-[url(/1.jpg)]">
     <template #left>
       <RouterLink
         class="h-full flex items-center justify-center"
@@ -8,7 +8,7 @@
         aria-label="Visit homepage"
       >
         <!-- <VuesticLogo :height="28" start="#FFF" /> -->
-         <!-- <img class="h-[200px]" src="../../public/3.png" alt=""> -->
+         <img class="absolute top-[0]" src="/3.png" alt="">
       </RouterLink>
     </template>
     <template #content>

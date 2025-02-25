@@ -6,7 +6,7 @@
   <VaCard class="mb-6">
     <VaCardContent class="min-h-[250px]">
       <h1 class="text-xl font-bold mb-4">Biểu đồ số lợn xuất/chuồng theo ngày</h1>
-      <ATable :data-source="dataSource" :columns="columns" bordered>
+      <ATable :data-source="dataSource" :columns="columns" bordered :loading="loading">
         <template #bodyCell="{ column, record }">
           <template v-if="column.key == 'detail'">
             <!-- Add the click event to the icon -->
@@ -23,6 +23,7 @@ import Filter from '../../components/filter/Filter.vue'
 import axios from 'axios'
 import dayjs from 'dayjs'
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
+
 export default {
   components: {
     Filter,
@@ -30,27 +31,31 @@ export default {
   },
   data() {
     const columns = [
-      { dataIndex: 'STT', title: 'STT' },
-      { dataIndex: 'BillDate', title: 'Ngày' },
-      { dataIndex: 'FarmhouseID', title: 'Trại' },
-      { dataIndex: 'CustomerID', title: 'Khách hàng' },
-      { dataIndex: 'EmployeeID', title: 'Người phụ trách' },
-      { dataIndex: 'ReasonDestroy', title: 'Lí do hủy' },
-      { dataIndex: 'detail', title: 'Chi tiết', key: 'detail' },
+      { dataIndex: 'STT', title: 'STT', align: 'center' },
+      { dataIndex: 'BillDate', title: 'Ngày', align: 'center'  },
+      { dataIndex: 'FarmhouseID', title: 'Trại', align: 'center'  },
+      { dataIndex: 'CustomerID', title: 'Khách hàng', align: 'center'  },
+      { dataIndex: 'EmployeeID', title: 'Người phụ trách', align: 'center'  },
+      { dataIndex: 'ReasonDestroy', title: 'Lí do hủy', align: 'center'  },
+      { dataIndex: 'detail', title: 'Chi tiết', key: 'detail', align: 'center'  },
     ]
     return {
       dataSource: [],
       columns,
+      loading: false, // Add the loading state
     }
   },
   mounted() {
+    this.loading = true; // Set loading to true when the API call is made
     axios.get('https://farmapidev.tnt-tech.vn/api/BILLs?UsersID=1&BillImport=1').then((response) => {
-      // Xử lý và format ngày cùng giờ trước khi lưu vào dataSource
       this.dataSource = response.data.map((item, index) => ({
         ...item,
-        STT: index + 1, // Thêm số thứ tự bắt đầu từ 1
-        BillDate: dayjs(item.BillDate).format('DD-MM-YYYY (hh:mm A)'), // Định dạng lại ngày và giờ
+        STT: index + 1, // Add serial number starting from 1
+        BillDate: dayjs(item.BillDate).format('DD-MM-YYYY (hh:mm A)'), // Format date and time
       }))
+      this.loading = false; // Set loading to false once the data is loaded
+    }).catch((error) => {
+      this.loading = false; // Also set loading to false in case of an error
     })
   },
   methods: {

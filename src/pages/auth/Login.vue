@@ -49,10 +49,12 @@ import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
 import axios from 'axios'
 import { validators } from '../../services/utils'
+import { useGlobalStore } from '../../stores/global-store'
 
 const { validate } = useForm('form')
 const { push } = useRouter()
 const { init } = useToast()
+const store = useGlobalStore()
 
 const formData = reactive({
   username: '',
@@ -82,6 +84,8 @@ const submit = async () => {
   try {
       if (formData.username == 'bk' && formData.password == '1') {
         // Hiển thị thông báo thành công và chuyển hướng đến dashboard
+        store.setUserID('1')
+        localStorage.setItem('userID', '1')
         init({ message: "You've successfully logged in", color: 'success' })
         push({ name: 'dashboard' })
       } else {

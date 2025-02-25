@@ -1,67 +1,52 @@
 <template>
   <h1 class="page-title">Bảng số lợn trong chuồng</h1>
   <div class="mb-4">
-    <label for="local">Khu vực: </label>
-    <select id="local" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" placeholder="Chọn khu vực">
-      <option value="Miền Bắc">Miền Bắc</option>
-      <option value="Miền Trung">Miền Trung</option>
-    </select>
-    <label for="city">Thành phố/Tỉnh: </label>
-    <select id="city" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="" placeholder="Chọn khu vực">
-      <option value="Hà Nội">Hà Nội</option>
-      <option value="Thái Nguyên">Thái Nguyên</option>
-    </select>
-    <label for="farm">Trang trại: </label>
-    <select id="farm" class="mr-2 p-2 rounded-[10px] cursor-pointer" name="Khu vực" placeholder="Chọn khu vực">
-      <option value="Farm 1">Farm 1</option>
-      <option value="Farm 2">Farm 2</option>
-    </select>
-    <label for="time">Thời gian: </label>
-    <VaDateInput id="time" v-model="date" class="mr-2 w-[140px] rounded-[10px]" />
-    <VaButton class="rounded-[15px] bg-red-300">Tìm kiếm<VaIcon name="vasearch" /></VaButton>
+    <Filter />
   </div>
   <VaCard class="mb-6">
-    <VaCardContent><ATable :data-source="dataSource" :columns="columns" /></VaCardContent>
+    <VaCardContent><ATable :data-source="dataSource" :columns="columns" bordered :loading="loading" /></VaCardContent>
   </VaCard>
 </template>
 
 <script>
-export default {
-  setup() {
-    return {
-      dataSource: [
-        {
-          key: '1',
-          name: 'Mike',
-          age: 32,
-          address: '10 Downing Street',
-        },
-        {
-          key: '2',
-          name: 'John',
-          age: 42,
-          address: '10 Downing Street',
-        },
-      ],
+import Filter from '../../components/filter/Filter.vue'
+import axios from 'axios'
+import dayjs from 'dayjs'
 
-      columns: [
-        {
-          title: 'Name',
-          dataIndex: 'name',
-          key: 'name',
-        },
-        {
-          title: 'Age',
-          dataIndex: 'age',
-          key: 'age',
-        },
-        {
-          title: 'Address',
-          dataIndex: 'address',
-          key: 'address',
-        },
-      ],
+export default {
+  components: {
+    Filter,
+  },
+  data() {
+    const columns = [
+      { dataIndex: 'STT', title: 'STT', align: 'center' },
+      { dataIndex: 'BillDate', title: 'Ngày', align: 'center' },
+      { dataIndex: 'FarmhouseID', title: 'Trại', align: 'center' },
+      { dataIndex: 'CustomerID', title: 'Khách hàng', align: 'center' },
+      { dataIndex: 'EmployeeID', title: 'Người phụ trách', align: 'center' },
+      { dataIndex: 'ReasonDestroy', title: 'Lí do hủy', align: 'center' },
+    ]
+    return {
+      columns,
+      dataSource: [],
+      loading: false,
     }
+  },
+  mounted() {
+    this.loading = true // Set loading to true when the API call is made
+    axios
+      .get('https://farmapidev.tnt-tech.vn/api/BILLs?UsersID=1&BillImport=3')
+      .then((response) => {
+        this.dataSource = response.data.map((item, index) => ({
+          ...item,
+          STT: index + 1, // Add serial number starting from 1
+          BillDate: dayjs(item.BillDate).format('DD-MM-YYYY (hh:mm A)'), // Format date and time
+        }))
+        this.loading = false // Set loading to false once the data is loaded
+      })
+      .catch((error) => {
+        this.loading = false // Also set loading to false in case of an error
+      })
   },
 }
 </script>

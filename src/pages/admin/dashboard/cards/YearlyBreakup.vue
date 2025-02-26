@@ -23,6 +23,7 @@ const lineChartData = reactive({
     {
       label: 'Trong chuồng',
       data: [],
+      backgroundColor: ['orange'],
     },
   ],
 })
@@ -60,13 +61,17 @@ const options = {
   },
 }
 
-// onMounted(() => {
-//   Promise.all([
-//     axios.get('https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=[1]&fromdate=03/01/2024&todate=09/30/2024&BillImport=3'),
-//     axios.get('https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=03/01/2024&todate=09/30/2024&BillImport=3'),
-//   ]).then(([datesResponse, countResponse]) => {
-//     lineChartData.labels = datesResponse.data;
-//     lineChartData.datasets[0].data = countResponse.data[0].ListCount;
-//   });
-// });
+onMounted(() => {
+  Promise.all([
+    axios.get(
+      'https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=[1]&fromdate=03/01/2024&todate=09/30/2024&BillImport=3',
+    ),
+    axios.get(
+      'https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=03/01/2024&todate=09/30/2024&BillImport=3',
+    ),
+  ]).then(([datesResponse, countResponse]) => {
+    lineChartData.labels = datesResponse.data
+    lineChartData.datasets[0].data = countResponse.data[0].ListCount
+  })
+})
 </script>

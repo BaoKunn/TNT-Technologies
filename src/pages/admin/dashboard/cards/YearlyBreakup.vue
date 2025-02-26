@@ -1,37 +1,33 @@
 <template>
   <VaCard>
     <VaCardTitle>
-      <h1 class="font-bold uppercase text-lg text-black">Số lượng heo chuồng trong tuần</h1>
+      <h1 class="font-bold uppercase text-lg text-black">Số lượng heo trong chuồng</h1>
     </VaCardTitle>
     <VaCardContent>
-      <!-- <div class="p-1 bg-black rounded absolute right-4 top-4">
-        <VaIcon name="mso-attach_money" color="#fff" size="large" />
-      </div> -->
-      <!-- <section>
-        <div class="text-xl font-bold mb-2">$6,820</div>
-        <p class="text-xs text-success">
-          <VaIcon name="arrow_upward" />
-          25.36%
-          <span class="text-secondary"> last month</span>
-        </p>
-      </section> -->
       <div class="w-full flex items-center h-[200px]">
-        <VaChart :data="chartData" class="h-32" type="line" :options="options" />
+        <VaChart :data="lineChartData" class="h-32" type="bar" :options="options" />
       </div>
     </VaCardContent>
   </VaCard>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { VaCard } from 'vuestic-ui'
 import VaChart from '../../../../components/va-charts/VaChart.vue'
-import { useChartData } from '../../../../data/charts/composables/useChartData'
-import { ChartOptions } from 'chart.js'
-import { lineChartDataTotal } from '../../../../data/charts/lineChartData copy'
+import { onMounted, reactive } from 'vue'
+import axios from 'axios'
 
-const chartData = useChartData(lineChartDataTotal)
+const lineChartData = reactive({
+  labels: [],
+  datasets: [
+    {
+      label: 'Trong chuồng',
+      data: [],
+    },
+  ],
+})
 
-const options: ChartOptions<'line'> = {
+const options = {
   scales: {
     x: {
       display: true,
@@ -63,4 +59,14 @@ const options: ChartOptions<'line'> = {
     },
   },
 }
+
+// onMounted(() => {
+//   Promise.all([
+//     axios.get('https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=[1]&fromdate=03/01/2024&todate=09/30/2024&BillImport=3'),
+//     axios.get('https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=03/01/2024&todate=09/30/2024&BillImport=3'),
+//   ]).then(([datesResponse, countResponse]) => {
+//     lineChartData.labels = datesResponse.data;
+//     lineChartData.datasets[0].data = countResponse.data[0].ListCount;
+//   });
+// });
 </script>

@@ -5,6 +5,7 @@ import { useGlobalStore } from '../../../../stores/global-store';
 
 export default {
   data() {
+    const userID = localStorage.getItem('userID')
     const columns = [
       {
         title: 'STT',
@@ -37,6 +38,7 @@ export default {
     return {
       dataSource: [],
       columns,
+      userID
     }
   },
   computed: {
@@ -45,7 +47,7 @@ export default {
     }
   },
   mounted() {
-    axios.get(`https://farmapidev.tnt-tech.vn/api/BILLs?UsersID=${this.store.userId}&BillImport=3`).then((response) => {
+    axios.get(`https://farmapidev.tnt-tech.vn/api/BILLs?UsersID=${this.userID}&BillImport=3`).then((response) => {
       // Xử lý thêm cột STT vào dữ liệu API
       this.dataSource = response.data.map((item, index) => ({
         ...item,

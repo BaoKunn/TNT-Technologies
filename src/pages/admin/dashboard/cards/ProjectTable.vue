@@ -5,6 +5,7 @@ import { useGlobalStore } from '../../../../stores/global-store';
 
 export default {
   data() {
+    const userID = localStorage.getItem('userID')
     return {
       dataSource: [],
       columns: [
@@ -35,7 +36,8 @@ export default {
           dataIndex: 'CustomerID',
           align: 'center'
         },
-      ]
+      ],
+      userID
     }
   },
   computed: {
@@ -44,7 +46,7 @@ export default {
     }
   },
   mounted() {
-    axios.get(`https://farmapidev.tnt-tech.vn/api/BILLs?UsersID=${this.store.userId}&BillImport=1`).then((response) => {
+    axios.get(`https://farmapidev.tnt-tech.vn/api/BILLs?UsersID=${this.userID}&BillImport=1`).then((response) => {
       // Xử lý và format ngày cùng giờ trước khi lưu vào dataSource
       this.dataSource = response.data.map((item, index) => ({
         ...item,

@@ -149,16 +149,18 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const store = useGlobalStore()
 
-  // Nếu userId trống và người dùng không đang ở trang login, chuyển hướng đến trang login
-  if (store.userId === '' && to.name !== 'login' && to.path !== '/auth/login') {
-    // Thêm một check để tránh trường hợp đang trong quá trình điều hướng, tránh vòng lặp
-    if (from.name === 'login') {
-      next()  // Nếu đang từ trang login, không điều hướng thêm
-    } else {
-      next({ name: 'login' })  // Chuyển hướng đến trang login
-    }
-  } else {
-    next()  // Cho phép điều hướng nếu không có vấn đề gì
+  // Nếu userID trống và người dùng không đang ở trang login, chuyển hướng đến trang login
+  if (localStorage.getItem('userID') === '' && to.name !== 'login' && to.path !== '/auth/login') {
+    next({ name: 'login' })
+  } 
+  // Nếu người dùng đang chuyển hướng đến trang login, xóa userID từ localStorage
+  else if (to.name === 'login') {
+    // Xóa userID khỏi localStorage khi chuyển hướng đến trang login
+    localStorage.setItem('userID', '');
+    next()  // Tiếp tục điều hướng đến trang login
+  } 
+  else {
+    next()  // Cho phép điều hướng bình thường
   }
 })
 

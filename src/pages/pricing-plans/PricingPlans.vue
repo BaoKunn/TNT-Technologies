@@ -81,19 +81,19 @@
     <VaCardContent>
       <h1 class="text-xl font-bold mb-4">Biểu đồ số lợn trong chuồng số 1 theo tháng</h1>
       <div>
-        <VaChart :data="chartData" type="bar" :options="options" />
+        <VaChart :data="chartDataMonth" type="bar" :options="options" />
       </div>
     </VaCardContent>
   </VaCard>
 </template>
 <script lang="ts" setup>
-import { useChartData } from '../../data/charts/composables/useChartData'
-import { barChartData } from '../../data/charts'
 import { ChartOptions } from 'chart.js'
 import VaChart from '../../components/va-charts/VaChart.vue'
 import Filter from '../../components/filter/Filter.vue'
-
-const chartData = useChartData(barChartData)
+import { onMounted, reactive } from 'vue'
+import axios from 'axios'
+import { useYearlyStore } from '../../stores/yearlyBreakup'
+import { useDatePickerStore } from '../../stores/datePicker'
 
 const options: ChartOptions<'bar'> = {
   scales: {
@@ -128,5 +128,47 @@ const options: ChartOptions<'bar'> = {
   },
 }
 
-const date = new Date()
+const store = useYearlyStore()
+const storeDatePicker = useDatePickerStore()
+
+const chartData = reactive({
+  labels: store.labels,
+  datasets: [
+    {
+      label: 'Xuất chuồng',
+      data: store.data,
+      backgroundColor: ['#3333FF'],
+    },
+  ],
+})
+
+const chartDataMonth = reactive({
+  labels: store.labels,
+  datasets: [
+    {
+      label: 'Xuất chuồng',
+      data: store.dataMonth,
+      backgroundColor: ['#00CC00'],
+    },
+  ],
+})
+
+onMounted(() => {
+  Promise.all([
+    axios.get(
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=3`,
+    ),
+    axios.get(
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=3`,
+    ),
+    axios.get(
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=3`,
+    ),
+  ]).then(([datesResponse, countResponse, countMonthponse]) => {
+    store.setLabels(datesResponse.data)
+    store.setData(countResponse.data[0].ListCount)
+    store.setDataMonth(countMonthponse.data[0].ListCount)
+  })
+})
+
 </script>

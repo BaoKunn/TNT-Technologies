@@ -16,13 +16,16 @@ import { VaCard } from 'vuestic-ui'
 import VaChart from '../../../../components/va-charts/VaChart.vue'
 import { onMounted, reactive } from 'vue'
 import axios from 'axios'
+import { useYearlyStore } from '../../../../stores/yearlyBreakup'
+
+const store = useYearlyStore()
 
 const lineChartData = reactive({
-  labels: [],
+  labels: store.labels,
   datasets: [
     {
       label: 'Trong chuồng',
-      data: [],
+      data: store.data,
       backgroundColor: ['orange'],
     },
   ],
@@ -70,8 +73,8 @@ onMounted(() => {
       'https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=03/01/2024&todate=09/30/2024&BillImport=3',
     ),
   ]).then(([datesResponse, countResponse]) => {
-    lineChartData.labels = datesResponse.data
-    lineChartData.datasets[0].data = countResponse.data[0].ListCount
+    store.setLabels(datesResponse.data)
+    store.setData(countResponse.data[0].ListCount)
   })
 })
 </script>

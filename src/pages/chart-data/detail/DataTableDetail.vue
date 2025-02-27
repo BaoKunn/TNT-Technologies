@@ -6,7 +6,7 @@
   <VaCard class="mb-6">
     <VaCardContent class="min-h-[250px]">
       <h1 class="text-xl font-bold mb-4">Bảng số nhập/xuất chi tiết</h1>
-      <ATable :data-source="dataSource" :columns="columns" bordered />
+      <ATable :data-source="dataSource" :columns="columns" bordered :pagination="false"/>
     </VaCardContent>
   </VaCard>
   <div class="flex flex-col sm:flex-row gap-4">

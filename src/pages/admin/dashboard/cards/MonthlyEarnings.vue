@@ -17,19 +17,23 @@ import axios from 'axios'
 import VaChart from '../../../../components/va-charts/VaChart.vue'
 import { onMounted, reactive } from 'vue'
 import { useMonthStore } from '../../../../stores/monthlyEaring'
+import { useDatePickerStore } from '../../../../stores/datePicker'
 
 const store = useMonthStore()
+const storeDatePicker = useDatePickerStore()
 
 const lineChartData = reactive({
   labels: store.labels,
   datasets: [
     {
       label: 'Xuất chuồng',
-      data: store.data,
-      backgroundColor: [
-      'red',
-      'blue'
-    ],
+      data: store.dataOut,
+      backgroundColor: ['blue'],
+    },
+    {
+      label: 'Nhập chuồng',
+      data: store.dataIn,
+      backgroundColor: ['red'],
     },
   ],
 })
@@ -69,11 +73,19 @@ const options = {
 
 onMounted(() => {
   Promise.all([
-    axios.get('https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=[1]&fromdate=03/01/2024&todate=09/30/2024&BillImport=1'),
-    axios.get('https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=03/01/2024&todate=09/30/2024&BillImport=1'),
-  ]).then(([datesResponse, countResponse]) => {
-    store.setLabels(datesResponse.data);
-    store.setData(countResponse.data[0].ListCount);
-  });
-});
+    axios.get(
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=[1]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
+    ),
+    axios.get(
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
+    ),
+    axios.get(
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=0`,
+    ),
+  ]).then(([datesResponse, countOutResponse, countInResponse]) => {
+    store.setLabels(datesResponse.data)
+    store.setDataIn(countOutResponse.data[0].ListCount)
+    store.setDataOut(countInResponse.data[0].ListCount)
+  })
+})
 </script>

@@ -5,7 +5,8 @@
     <ASelect
       id="local"
       v-model:value="province"
-      style="width: 120px"
+      mode="multiple"
+      style="min-width: 120px"
       :options="provinceData.map((pro) => ({ value: pro.value, label: pro.label }))"
     >
     </ASelect>
@@ -15,7 +16,8 @@
     <ASelect
       id="city"
       v-model:value="secondCity"
-      style="width: 120px"
+      style="min-width: 120px"
+      mode="multiple"
       :options="cities.map((city) => ({ value: city.value, label: city.label }))"
     >
     </ASelect>
@@ -25,11 +27,11 @@
     <ASelect
       id="farm"
       v-model:value="thirdCity"
-      style="width: 120px"
+      style="min-width: 120px"
+      mode="multiple"
       :options="thirdCities.map((city) => ({ value: city, label: city }))"
     >
     </ASelect>
-    <AButton class="bg-blue-500 text-white">Tìm kiếm</AButton>
   </ASpace>
 </template>
 
@@ -74,44 +76,54 @@ import { defineComponent, reactive, toRefs, computed, watch } from 'vue'
 
 export default defineComponent({
   setup() {
-    // Default province is based on provinceData[0].value
-    const province = provinceData[0].value
     const state = reactive({
-      province,
+      province: [],  // Khởi tạo province là mảng để có thể chọn nhiều khu vực
+      secondCity: [], // Mảng cho secondCity (các thành phố)
+      thirdCity: [], // Mảng cho thirdCity (các trang trại)
       provinceData,
       cityData,
       farmData,
-      secondCity: cityData[province][0].value, // Default secondCity (city value)
-      thirdCity: farmData[cityData[province][0].value][0], // Set default thirdCity based on first secondCity's farm data
     })
 
-    // Compute cities based on the selected province
+    // Tính toán danh sách thành phố dựa trên các tỉnh đã chọn
     const cities = computed(() => {
-      return cityData[state.province] // Directly map from cityData based on province
+      let selectedCities = []
+      state.province.forEach((province) => {
+        if (cityData[province]) {
+          selectedCities = selectedCities.concat(cityData[province])
+        }
+      })
+      return selectedCities
     })
 
-    // Compute third-level cities based on the selected second-level city
+    // Tính toán danh sách trang trại dựa trên thành phố đã chọn
     const thirdCities = computed(() => {
-      return farmData[state.secondCity] || [] // Get the third-level (farm areas) from farmData
+      let selectedFarms = []
+      state.secondCity.forEach((city) => {
+        if (farmData[city]) {
+          selectedFarms = selectedFarms.concat(farmData[city])
+        }
+      })
+      return selectedFarms
     })
 
-    // Watch for changes to the selected province
+    // Theo dõi sự thay đổi của các khu vực (province)
     watch(
       () => state.province,
-      (val) => {
-        // Reset secondCity and thirdCity based on selected province
-        state.secondCity = cityData[val][0].value // Default second city value
-        state.thirdCity = farmData[state.secondCity][0] // Default third city value based on secondCity
-      },
+      () => {
+        // Đặt lại secondCity và thirdCity khi các khu vực thay đổi
+        state.secondCity = []
+        state.thirdCity = []
+      }
     )
 
-    // Watch for changes to the secondCity
+    // Theo dõi sự thay đổi của secondCity
     watch(
       () => state.secondCity,
-      (val) => {
-        // Update thirdCity based on the selected second city
-        state.thirdCity = farmData[val][0] // Set default thirdCity value for the secondCity
-      },
+      () => {
+        // Đặt lại thirdCity khi secondCity thay đổi
+        state.thirdCity = []
+      }
     )
 
     return {

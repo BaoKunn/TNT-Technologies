@@ -4,7 +4,10 @@ export const useMonthStore = defineStore('monthly', {
   state: () => {
     return {
       labels: [],
-      data: []
+      dataIn: [],
+      dataOut: [],
+      dataInMonth: [],
+      dataOutMonth: []
     }
   },
 
@@ -12,8 +15,17 @@ export const useMonthStore = defineStore('monthly', {
     setLabels(labels: never[]) {
       this.labels = labels
     },
-    setData(data: never[]) {
-      this.data = data
+    setDataIn(data: never[]) {
+      this.dataIn = data
+    },
+    setDataOut(data: never[]) {
+      this.dataOut = data
+    },
+    setDataInMonth(data: never[]) {
+      this.dataInMonth = data
+    },
+    setDataOutMonth(data: never[]) {
+      this.dataOutMonth = data
     }
   },
 })

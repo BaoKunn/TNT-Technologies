@@ -8,6 +8,7 @@ import MonthlyEarnings from './cards/MonthlyEarnings.vue'
 import RegionRevenue from './cards/RegionRevenue.vue'
 import Timeline from './cards/Timeline.vue'
 import Filter from '../../../components/filter/Filter.vue'
+import DatePicker from '../../../components/datePicker/DatePicker.vue'
 </script>
 
 <template>
@@ -15,6 +16,9 @@ import Filter from '../../../components/filter/Filter.vue'
   <section class="flex flex-col gap-4">
     <div>
       <Filter />
+    </div>
+    <div>
+      <DatePicker />
     </div>
     <DataSection />
     <div class="flex flex-col sm:flex-row gap-4">

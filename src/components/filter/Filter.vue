@@ -29,13 +29,37 @@
       v-model:value="thirdCity"
       style="min-width: 120px"
       mode="multiple"
-      :options="thirdCities.map((city) => ({ value: city, label: city }))"
+      :options="thirdCities.map((city) => ({ value: city.value, label: city.label }))"
     >
     </ASelect>
   </ASpace>
+  <div class="mt-[16px]">
+    <a-space>
+      <label for="date-picker">Thời gian:</label>
+      <a-range-picker v-model:value="date"></a-range-picker>
+      <!-- Disable button when no dates are selected -->
+      <AButton 
+        class="bg-blue-500 text-white" 
+        @click="filter(province, secondCity, thirdCity)"
+        :disabled="isButtonDisabled"
+      >
+        Tìm kiếm
+      </AButton>
+    </a-space>
+  </div>
 </template>
 
-<script>
+<script setup>
+import { computed, onMounted, ref, watch } from 'vue'
+import axios from 'axios'
+import dayjs from 'dayjs'
+import { useGlobalStore } from '../../stores/global-store'
+import { useDatePickerStore } from '../../stores/datePicker'
+
+const store = useGlobalStore()
+const storeDatePicker = useDatePickerStore()
+
+// Dữ liệu cho khu vực, thành phố và trang trại
 const provinceData = [
   { label: 'Miền Bắc', value: 'MB' },
   { label: 'Miền Trung', value: 'MT' },
@@ -46,91 +70,167 @@ const cityData = {
   MB: [
     { label: 'Hà Nội', value: 'HaNoi' },
     { label: 'Thái Nguyên', value: 'ThaiNguyen' },
-    { label: 'Vĩnh Phúc', value: 'VinhPhuc' },
+    { label: 'Thái Bình', value: 'ThaiBinh' },
   ],
   MT: [
     { label: 'Thanh Hóa', value: 'ThanhHoa' },
     { label: 'Nghệ An', value: 'NgheAn' },
-    { label: 'Hà Tĩnh', value: 'HaTinh' },
+    { label: 'Quảng Nam', value: 'QuangNam' },
   ],
   MN: [
-    { label: 'TP. Hồ Chí Minh', value: 'HCM' },
-    { label: 'Long An', value: 'LongAn' },
+    { label: 'Bình Dương', value: 'BinhDuong' },
     { label: 'Cần Thơ', value: 'CanTho' },
   ],
 }
 
 const farmData = {
-  HaNoi: ['Thường Tín', 'Phú Xuyên', 'Hoài Đức', 'Đan Phượng'],
-  ThaiNguyen: ['Sông Công', 'Phổ Yên', 'Đại Từ'],
-  VinhPhuc: ['Vĩnh Tường', 'Sông Lô'],
-  ThanhHoa: ['Sầm Sơn', 'Thọ Xuân'],
-  NgheAn: ['Vinh', 'Cửa Lò'],
-  HaTinh: ['Hồng Lĩnh', 'Kỳ Anh'],
-  HCM: ['Bình Thạnh', 'Thủ Đức', 'Gò Vấp'],
-  LongAn: ['Tân An', 'Bến Lức'],
-  CanTho: ['Ninh Kiều', 'Bình Thủy'],
+  HaNoi: [{ label: 'Thạch Thất', value: 2 }],
+  ThaiNguyen: [{ label: 'Phổ Yên', value: 1 }],
+  ThaiBinh: [{ label: 'Thái Bình', value: 3 }],
+  ThanhHoa: [{ label: 'Thanh Hóa', value: 4 }],
+  NgheAn: [
+    { label: 'Cửa Lò', value: 5 },
+    { label: 'Cửa Hội', value: 6 },
+  ],
+  QuangNam: [
+    { label: 'Quế Sơn', value: 7 },
+    { label: 'Điện Bàn', value: 8 },
+  ],
+  BinhDuong: [
+    { label: 'Thuận An', value: 9 },
+    { label: 'Dĩ An', value: 10 },
+  ],
+  CanTho: [
+    { label: 'Vĩnh Thạnh', value: 11 },
+    { label: 'Phong Điền', value: 12 },
+  ],
 }
 
-import { defineComponent, reactive, toRefs, computed, watch } from 'vue'
+// Các ref để lưu trữ giá trị của province, city và farm
+const province = ref([])
+const secondCity = ref([])
+const thirdCity = ref([])
 
-export default defineComponent({
-  setup() {
-    const state = reactive({
-      province: [],  // Khởi tạo province là mảng để có thể chọn nhiều khu vực
-      secondCity: [], // Mảng cho secondCity (các thành phố)
-      thirdCity: [], // Mảng cho thirdCity (các trang trại)
-      provinceData,
-      cityData,
-      farmData,
-    })
+const date = ref([null, null]) // Lưu trữ mảng ngày chọn (Ngày đầu và ngày cuối)
+const startDate = ref(null) // Ngày đầu tiên
+const endDate = ref(null) // Ngày cuối cùng
 
-    // Tính toán danh sách thành phố dựa trên các tỉnh đã chọn
-    const cities = computed(() => {
-      let selectedCities = []
-      state.province.forEach((province) => {
-        if (cityData[province]) {
-          selectedCities = selectedCities.concat(cityData[province])
-        }
-      })
-      return selectedCities
-    })
+watch(date, (newDate) => {
+  if (newDate && newDate.length === 2) {
+    startDate.value = newDate[0] // Ngày đầu tiên
+    endDate.value = newDate[1] // Ngày cuối cùng
 
-    // Tính toán danh sách trang trại dựa trên thành phố đã chọn
-    const thirdCities = computed(() => {
+    // Cập nhật store nếu cần
+    storeDatePicker.setStartDate(formattedStartDate)
+    storeDatePicker.setEndDate(formattedEndDate)
+  }
+})
+
+const formatDate = (date) => {
+  if (!date) return '' // Nếu date là null, trả về chuỗi rỗng
+
+  return dayjs(date).format('MM/DD/YYYY') // Định dạng ngày theo dd/mm/yyyy
+}
+
+// Computed properties để hiển thị ngày đầu và ngày cuối đã được định dạng
+const formattedStartDate = computed(() => formatDate(startDate.value))
+const formattedEndDate = computed(() => formatDate(endDate.value))
+
+// Tính toán danh sách thành phố dựa trên các tỉnh đã chọn
+const cities = computed(() => {
+  let selectedCities = []
+  province.value.forEach((province) => {
+    if (cityData[province]) {
+      selectedCities = selectedCities.concat(cityData[province])
+    }
+  })
+  return selectedCities
+})
+
+// Tính toán danh sách trang trại dựa trên thành phố đã chọn
+const thirdCities = computed(() => {
+  let selectedFarms = []
+  secondCity.value.forEach((city) => {
+    if (farmData[city]) {
+      selectedFarms = selectedFarms.concat(farmData[city])
+    }
+  })
+  return selectedFarms
+})
+
+// Theo dõi sự thay đổi của province và đặt lại secondCity và thirdCity khi thay đổi
+watch(province, () => {
+  secondCity.value = []
+  thirdCity.value = []
+})
+
+// Theo dõi sự thay đổi của secondCity và đặt lại thirdCity khi thay đổi
+watch(secondCity, () => {
+  thirdCity.value = []
+})
+
+const filter = (province, secondCity, thirdCity) => {
+  // Kiểm tra nếu province có chứa 'MB', 'MT' hoặc 'MN'
+  if (province.includes('MB') || province.includes('MT') || province.includes('MN')) {
+    // Kiểm tra xem secondCity và thirdCity có rỗng không
+    if (secondCity.length === 0 && thirdCity.length === 0) {
+      let farmsInRegion = []
+
+      // Tạo danh sách trang trại theo khu vực
+      if (province.includes('MB')) {
+        farmsInRegion = [...farmData.HaNoi, ...farmData.ThaiNguyen, ...farmData.ThaiBinh]
+      }
+      if (province.includes('MT')) {
+        farmsInRegion = [...farmData.ThanhHoa, ...farmData.NgheAn, ...farmData.QuangNam]
+      }
+      if (province.includes('MN')) {
+        farmsInRegion = [...farmData.BinhDuong, ...farmData.CanTho]
+      }
+
+      // Lấy các giá trị của thirdCity (value) từ các trang trại thuộc khu vực đã chọn
+      store.setRoleFarmId(farmsInRegion.map((farm) => farm.value))
+      //console.log(`Giá trị của a (${province}):`, a);  // In ra giá trị của a
+      storeDatePicker.setStartDate(formattedStartDate)
+      storeDatePicker.setEndDate(formattedEndDate)
+
+      localStorage.setItem('roleFarmId', farmsInRegion.map((farm) => farm.value))
+      localStorage.setItem('startDate', formattedStartDate)
+      localStorage.setItem('endDate', formattedEndDate)
+    } else if (secondCity.length > 0 && thirdCity.length === 0) {
+      // Khi đã chọn thành phố nhưng chưa chọn trang trại
       let selectedFarms = []
-      state.secondCity.forEach((city) => {
+
+      // Duyệt qua các thành phố đã chọn và lấy trang trại tương ứng
+      secondCity.forEach((city) => {
         if (farmData[city]) {
           selectedFarms = selectedFarms.concat(farmData[city])
         }
       })
-      return selectedFarms
-    })
 
-    // Theo dõi sự thay đổi của các khu vực (province)
-    watch(
-      () => state.province,
-      () => {
-        // Đặt lại secondCity và thirdCity khi các khu vực thay đổi
-        state.secondCity = []
-        state.thirdCity = []
-      }
-    )
+      // Gán các giá trị của trang trại vào biến b
+      store.setRoleFarmId(selectedFarms.map((farm) => farm.value))
+      //console.log(`Giá trị của b (${province}):`, b);  // In ra giá trị của b
+      storeDatePicker.setStartDate(formattedStartDate)
+      storeDatePicker.setEndDate(formattedEndDate)
 
-    // Theo dõi sự thay đổi của secondCity
-    watch(
-      () => state.secondCity,
-      () => {
-        // Đặt lại thirdCity khi secondCity thay đổi
-        state.thirdCity = []
-      }
-    )
-
-    return {
-      ...toRefs(state),
-      cities,
-      thirdCities,
+      localStorage.setItem('roleFarmId', selectedFarms.map((farm) => farm.value))
+      localStorage.setItem('startDate', formattedStartDate)
+      localStorage.setItem('endDate', formattedEndDate)
     }
-  },
+  }
+}
+
+// Computed property to disable the button if no date is selected
+const isButtonDisabled = computed(() => {
+  return !startDate.value || !endDate.value;  // Disable button if either start or end date is missing
+})
+
+onMounted(() => {
+  axios
+    .get(`https://farmapidev.tnt-tech.vn/api/Farmhouse/GetFarmhouseList?UsersID=${localStorage.getItem('userID')}`)
+    .then((response) => {
+      store.setRoleFarmId(response.data)
+      localStorage.setItem('roleFarmId', response.data)
+    })
 })
 </script>

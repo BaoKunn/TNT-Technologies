@@ -1,11 +1,11 @@
 <template>
-  <VaCard>
+  <VaCard :key="cardKey">
     <VaCardTitle>
       <h1 class="font-bold uppercase text-lg text-black">Số lượng nhập/xuất chuồng</h1>
     </VaCardTitle>
     <VaCardContent>
-      <div class="w-full flex items-center h-[200px]">
-        <VaChart :data="lineChartData" class="h-32" type="bar" :options="options" />
+      <div ref="chartRef" class="w-full flex items-center h-[400px]">
+        <!-- Display chart here -->
       </div>
     </VaCardContent>
   </VaCard>
@@ -13,79 +13,144 @@
 
 <script setup>
 import { VaCard } from 'vuestic-ui'
+import * as echarts from 'echarts'
 import axios from 'axios'
-import VaChart from '../../../../components/va-charts/VaChart.vue'
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
+import { useGlobalStore } from '../../../../stores/global-store'
 import { useMonthStore } from '../../../../stores/monthlyEaring'
 import { useDatePickerStore } from '../../../../stores/datePicker'
 
-const store = useMonthStore()
+const store = useGlobalStore()
+const storeMonthly = useMonthStore()
 const storeDatePicker = useDatePickerStore()
 
-const lineChartData = reactive({
-  labels: store.labels,
-  datasets: [
-    {
-      label: 'Xuất chuồng',
-      data: store.dataOut,
-      backgroundColor: ['blue'],
-    },
-    {
-      label: 'Nhập chuồng',
-      data: store.dataIn,
-      backgroundColor: ['red'],
-    },
-  ],
+let chartRef = ref()
+let myChart = ref()
+let roleFarmIdLocal = ref(localStorage.getItem('roleFarmId'))
+
+// Call fetchData on component mount as well
+onMounted(() => {
+  fetchData(roleFarmIdLocal) // Ensure that data is fetched initially
 })
 
-const options = {
-  scales: {
-    x: {
-      display: true,
-      grid: {
-        display: true, // Disable X-axis grid lines ("net")
+// Fetch data based on roleFarmId
+const fetchData = async (roleFarmId) => {
+  try {
+    // API calls
+    const [datesResponse, countOutResponse, countInResponse] = await Promise.all([
+      axios.get(
+        `https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
+      ),
+      axios.get(
+        `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
+      ),
+      axios.get(
+        `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=0`,
+      ),
+    ])
+
+    // Update the store with new data
+    storeMonthly.setLabels(datesResponse.data)
+    storeMonthly.setDataIn(countInResponse?.data[0]?.ListCount)
+    storeMonthly.setDataOut(countOutResponse?.data[0]?.ListCount)
+
+    // Initialize the chart if not already initialized
+    if (!myChart.value) {
+      myChart.value = echarts.init(chartRef.value)
+    }
+
+    // Define the chart options
+    const option = {
+      tooltip: {
+        trigger: 'axis',
       },
-    },
-    y: {
-      display: true,
-      grid: {
-        display: true, // Disable Y-axis grid lines ("net")
+      legend: {},
+      toolbox: {
+        show: true,
+        feature: {
+          dataZoom: {
+            yAxisIndex: 'none',
+          },
+          dataView: { readOnly: false },
+          magicType: { type: ['bar', 'line'] },
+          restore: {},
+          saveAsImage: {},
+        },
       },
-      ticks: {
-        display: true, // Hide Y-axis values
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: storeMonthly.labels,
       },
-    },
-  },
-  interaction: {
-    intersect: false,
-    mode: 'index',
-  },
-  plugins: {
-    legend: {
-      display: true,
-      position: 'bottom',
-    },
-    tooltip: {
-      enabled: true,
-    },
-  },
+      yAxis: {
+        type: 'value',
+        axisLabel: {
+          formatter: '{value}',
+        },
+      },
+      series: [
+        {
+          name: 'Số lượng xuất chuồng',
+          type: 'line',
+          data: storeMonthly.dataOut,
+          markPoint: {
+            data: [
+              { type: 'max', name: 'Max' },
+              { type: 'min', name: 'Min' },
+            ],
+          },
+          markLine: {
+            data: [{ type: 'average', name: 'Avg' }],
+          },
+        },
+        {
+          name: 'Số lượng nhập chuồng',
+          type: 'line',
+          data: storeMonthly.dataIn,
+          markPoint: {
+            data: [{ name: '最低', value: -2, xAxis: 1, yAxis: -1.5 }],
+          },
+          markLine: {
+            data: [
+              { type: 'average', name: 'Avg' },
+              [
+                {
+                  symbol: 'none',
+                  x: '90%',
+                  yAxis: 'max',
+                },
+                {
+                  symbol: 'circle',
+                  label: {
+                    position: 'start',
+                    formatter: 'Max',
+                  },
+                  type: 'max',
+                  name: '最高点',
+                },
+              ],
+            ],
+          },
+        },
+      ],
+    }
+
+    // Set the chart options
+    myChart.value.setOption(option)
+  } catch (error) {
+    console.error('Error loading data for chart:', error)
+  }
 }
 
-onMounted(() => {
-  Promise.all([
-    axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=[1]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
-    ),
-    axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
-    ),
-    axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=0`,
-    ),
-  ]).then(([datesResponse, countOutResponse, countInResponse]) => {
-    store.setLabels(datesResponse.data)
-    store.setDataIn(countOutResponse.data[0].ListCount)
-    store.setDataOut(countInResponse.data[0].ListCount)
-  })
-})
+
+
+watch(
+  () => store.roleFarmId,
+  async (newRoleFarmId) => {
+    if (newRoleFarmId) {
+      await fetchData(newRoleFarmId)
+    }
+  },
+  { immediate: true }, // Call immediately on mount as well
+)
 </script>

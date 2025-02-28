@@ -64,39 +64,37 @@ const formData = reactive({
 
 const submit = async () => {
   if (validate()) {
-  //   try {
-  //     // Gọi API đăng nhập
-  //     const response = await axios.get(`https://farmapidev.tnt-tech.vn/api/USER/Login?UserName=${formData.email}&Password=${formData.password}`)
-
-  //     if (response.status == 200) {
-  //       // Hiển thị thông báo thành công và chuyển hướng đến dashboard
-  //       init({ message: "You've successfully logged in", color: 'success' })
-  //       push({ name: 'dashboard' })
-  //     } else {
-  //       // Hiển thị thông báo lỗi nếu không thành công
-  //       init({ message: response.data.message || 'Login failed', color: 'danger' })
-  //     }
-  //   } catch (error) {
-  //     // Xử lý lỗi nếu có
-  //     init({ message: 'An error occurred while logging in', color: 'danger' })
-  //   }
-  // }
-  try {
+    try {
+      // Replace the login logic here if necessary
       if (formData.username == 'bk' && formData.password == '1') {
-        // Hiển thị thông báo thành công và chuyển hướng đến dashboard
+        // Calculate the start and end date
+        const today = new Date();
+        const endDate = today.toLocaleDateString('en-US'); // Today's date
+        today.setDate(today.getDate() - 7); // Subtract 7 days from today
+        const startDate = today.toLocaleDateString('en-US'); // Start date (7 days ago)
+
+        const a = [startDate]
+        const b = [endDate]
+        // Set to localStorage
         store.setUserID('1')
-        localStorage.setItem('userID', '1')
-        init({ message: "You've successfully logged in", color: 'success' })
-        push({ name: 'dashboard' })
+        localStorage.setItem('userID', '1');
+        localStorage.setItem('startDate', '01/31/2025');
+        localStorage.setItem('endDate', '01/31/2025');
+
+        // Show success toast
+        init({ message: "You've successfully logged in", color: 'success' });
+
+        // Redirect to the dashboard
+        push({ name: 'dashboard' });
       } else {
-        // Hiển thị thông báo lỗi nếu không thành công
-        init({ message: 'Login failed', color: 'danger' })
-        // init({ message: response.data.message || 'Login failed', color: 'danger' })
+        // Show login failure message
+        init({ message: 'Login failed', color: 'danger' });
       }
     } catch (error) {
-      // Xử lý lỗi nếu có
-      init({ message: 'An error occurred while logging in', color: 'danger' })
+      // Show error message if an error occurs
+      init({ message: 'An error occurred while logging in', color: 'danger' });
     }
   }
-}
+};
+
 </script>

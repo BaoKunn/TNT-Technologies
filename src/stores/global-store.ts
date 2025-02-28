@@ -4,7 +4,8 @@ export const useGlobalStore = defineStore('global', {
   state: () => {
     return {
       isSidebarMinimized: false,
-      userId: ''
+      userId: '',
+      roleFarmId: []
     }
   },
 
@@ -14,6 +15,9 @@ export const useGlobalStore = defineStore('global', {
     },
     setUserID(id: string) {
       this.userId = id
+    },
+    setRoleFarmId(farm: []) {
+      this.roleFarmId = farm
     }
   },
 })

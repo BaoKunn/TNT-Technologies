@@ -17,16 +17,16 @@ import DatePicker from '../../../components/datePicker/DatePicker.vue'
     <div>
       <Filter />
     </div>
-    <div>
-      <DatePicker />
-    </div>
     <DataSection />
     <div class="flex flex-col sm:flex-row gap-4">
-      <div class="flex flex-col gap-4 w-full grid grid-cols-1 sm:grid-cols-1">
+      <!-- Cột 1 (MonthlyEarnings và YearlyBreakup) chiếm 2 phần -->
+      <div class="flex flex-col gap-4 w-full sm:w-2/3">
         <MonthlyEarnings />
         <YearlyBreakup />
       </div>
-      <RevenueUpdates class="w-full grid grid-cols-1 sm:grid-cols-1" />
+
+      <!-- Cột 2 (RevenueUpdates) chiếm 1 phần -->
+      <RevenueUpdates class="w-full sm:w-1/3" />
     </div>
     <div class="flex flex-col lg:flex-row gap-4">
       <ProjectTable class="w-full sm:w-[100%] lg:w-[50%]" />

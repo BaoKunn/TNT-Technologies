@@ -6,8 +6,8 @@
   <VaCard class="mb-6">
     <VaCardContent>
       <h1 class="text-xl font-bold mb-4">Biểu đồ số lợn xuất/chuồng theo ngày</h1>
-      <div>
-        <VaChart :data="chartData" type="bar" :options="options" />
+      <div ref="chartRef" class="w-full flex items-center h-[400px]">
+        <!-- <VaChart :data="chartData" type="bar" :options="options" /> -->
       </div>
     </VaCardContent>
   </VaCard>
@@ -32,19 +32,24 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import VaChart from '../../components/va-charts/VaChart.vue'
-import { ChartOptions } from 'chart.js'
 import Filter from '../../components/filter/Filter.vue'
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import axios from 'axios'
+import * as echarts from 'echarts'
+import { useGlobalStore } from '../../stores/global-store'
 import { useMonthStore } from '../../stores/monthlyEaring'
 import { useDatePickerStore } from '../../stores/datePicker'
 
-const store = useMonthStore()
+const store = useGlobalStore()
+const storeMonth = useMonthStore()
 const storeDatePicker = useDatePickerStore()
 
-const options: ChartOptions<'bar'> = {
+let chartRef = ref()
+let myChart = ref()
+
+const options = {
   scales: {
     x: {
       display: true,
@@ -78,66 +83,161 @@ const options: ChartOptions<'bar'> = {
 }
 
 const chartData = reactive({
-  labels: store.labels,
+  labels: storeMonth.labels,
   datasets: [
     {
       label: 'Xuất chuồng',
-      data: store.dataOut,
+      data: storeMonth.dataOut,
       backgroundColor: ['blue'],
     },
     {
       label: 'Nhập chuồng',
-      data: store.dataIn,
+      data: storeMonth.dataIn,
       backgroundColor: ['red'],
     },
   ],
 })
 
 const chartDataInMonth = reactive({
-  labels: store.labels,
+  labels: storeMonth.labels,
   datasets: [
     {
       label: 'Nhập chuồng',
-      data: store.dataIn,
+      data: storeMonth.dataIn,
       backgroundColor: ['green'],
     },
   ],
 })
 
 const chartDataOutMonth = reactive({
-  labels: store.labels,
+  labels: storeMonth.labels,
   datasets: [
     {
       label: 'Nhập chuồng',
-      data: store.dataOut,
+      data: storeMonth.dataOut,
       backgroundColor: ['Olive'],
     },
   ],
 })
 
 onMounted(() => {
+  // if (store.roleFarmId) {
+  //   fetchData(store.roleFarmId)
+  // }
+
+  myChart.value = echarts.init(chartRef.value)
+  let option = {
+    tooltip: {
+      trigger: 'axis',
+    },
+    legend: {},
+    toolbox: {
+      show: true,
+      feature: {
+        dataZoom: {
+          yAxisIndex: 'none',
+        },
+        dataView: { readOnly: false },
+        magicType: { type: ['bar', 'line'] },
+        restore: {},
+        saveAsImage: {},
+      },
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: storeMonth.labels,
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: {
+        formatter: '{value}',
+      },
+    },
+    series: [
+      {
+        name: 'Số lượng xuất chuồng',
+        type: 'line',
+        data: storeMonth.dataOut,
+        markPoint: {
+          data: [
+            { type: 'max', name: 'Max' },
+            { type: 'min', name: 'Min' },
+          ],
+        },
+        markLine: {
+          data: [{ type: 'average', name: 'Avg' }],
+        },
+      },
+      {
+        name: 'Số lượng nhập chuồng',
+        type: 'line',
+        data: storeMonth.dataIn,
+        markPoint: {
+          data: [{ name: '周最低', value: -2, xAxis: 1, yAxis: -1.5 }],
+        },
+        markLine: {
+          data: [
+            { type: 'average', name: 'Avg' },
+            [
+              {
+                symbol: 'none',
+                x: '90%',
+                yAxis: 'max',
+              },
+              {
+                symbol: 'circle',
+                label: {
+                  position: 'start',
+                  formatter: 'Max',
+                },
+                type: 'max',
+                name: '最高点',
+              },
+            ],
+          ],
+        },
+      },
+    ],
+  }
+  myChart.value.setOption(option)
+})
+
+// Hàm gọi API
+const fetchData = (roleFarmId) => {
   Promise.all([
     axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
     ),
     axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
     ),
     axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=0`,
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=0`,
     ),
     axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=0`,
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=0`,
     ),
     axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=[1,2,3,4,5,6,7,8,9,10,11,12]&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
     ),
   ]).then(([datesResponse, countOutResponse, countInResponse, countInResponseMonth, countOutResponseMonth]) => {
-    store.setLabels(datesResponse.data)
-    store.setDataOut(countOutResponse.data[0].ListCount)
-    store.setDataIn(countInResponse.data[0].ListCount)
-    store.setDataOutMonth(countOutResponseMonth.data[0].ListCount)
-    store.setDataInMonth(countInResponseMonth.data[0].ListCount)
+    storeMonth.setLabels(datesResponse.data)
+    storeMonth.setDataOut(countOutResponse.data[0].ListCount)
+    storeMonth.setDataIn(countInResponse.data[0].ListCount)
+    storeMonth.setDataOutMonth(countOutResponseMonth.data[0].ListCount)
+    storeMonth.setDataInMonth(countInResponseMonth.data[0].ListCount)
   })
-})
+}
+
+// Sử dụng watch để theo dõi sự thay đổi của store.roleFarmId
+// watch(
+//   () => store.roleFarmId,
+//   (newRoleFarmId) => {
+//     // Kiểm tra nếu newRoleFarmId có dữ liệu hợp lệ
+//     if (newRoleFarmId) {
+//       fetchData(newRoleFarmId)
+//     }
+//   },
+// )
 </script>

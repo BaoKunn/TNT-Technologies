@@ -1,5 +1,5 @@
 <template>
-  <VaCard :key="cardKey">
+  <VaCard>
     <VaCardTitle>
       <h1 class="font-bold uppercase text-lg text-black">Số lượng nhập/xuất chuồng</h1>
     </VaCardTitle>
@@ -49,6 +49,12 @@ const fetchData = async (roleFarmId) => {
       ),
     ])
 
+    const totalIn = countInResponse?.data[0]?.ListCount?.reduce((sum, current) => sum + current, 0) || 0;
+    const totalOut = countOutResponse?.data[0]?.ListCount?.reduce((sum, current) => sum + current, 0) || 0;
+
+    storeMonthly.setTotalIn(totalIn)
+    storeMonthly.setTotalOut(totalOut)
+
     // Update the store with new data
     storeMonthly.setLabels(datesResponse.data)
     storeMonthly.setDataIn(countInResponse?.data[0]?.ListCount)
@@ -62,8 +68,8 @@ const fetchData = async (roleFarmId) => {
     // Define the chart options
     const option = {
       tooltip: {
-        trigger: 'axis',
-      },
+    trigger: 'axis'
+  },
       legend: {},
       toolbox: {
         show: true,
@@ -142,15 +148,13 @@ const fetchData = async (roleFarmId) => {
   }
 }
 
-
-
 watch(
-  () => store.roleFarmId,
-  async (newRoleFarmId) => {
-    if (newRoleFarmId) {
-      await fetchData(newRoleFarmId)
+  [() => store.roleFarmId, () => storeDatePicker.endDate],  // Watch both properties
+  async ([newRoleFarmId, newEndDate]) => {  // Destructure the new values
+    if (newRoleFarmId && newEndDate) {
+      await fetchData(newRoleFarmId);  // Fetch data again with the new roleFarmId
     }
   },
-  { immediate: true }, // Call immediately on mount as well
+  { immediate: true }  // Call immediately on mount as well
 )
 </script>

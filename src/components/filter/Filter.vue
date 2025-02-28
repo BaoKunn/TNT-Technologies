@@ -1,52 +1,59 @@
 <template>
-  <ASpace>
+  <ASpace class="flex flex-col items-end gap-4 w-full">
     <!-- Province selection -->
-    <label for="local">Khu vực: </label>
-    <ASelect
-      id="local"
-      v-model:value="province"
-      mode="multiple"
-      style="min-width: 120px"
-      :options="provinceData.map((pro) => ({ value: pro.value, label: pro.label }))"
-    >
-    </ASelect>
+    <div class="mb-[12px]">
+      <label for="local" >Khu vực: </label>
+      <ASelect
+        id="local"
+        class="mr-[8px]"
+        v-model:value="province"
+        mode="multiple"
+        style="min-width: 120px"
+        :options="provinceData.map((pro) => ({ value: pro.value, label: pro.label }))"
+      >
+      </ASelect>
 
-    <!-- Second-level city selection -->
-    <label for="city">Thành phố/Tỉnh: </label>
-    <ASelect
-      id="city"
-      v-model:value="secondCity"
-      style="min-width: 120px"
-      mode="multiple"
-      :options="cities.map((city) => ({ value: city.value, label: city.label }))"
-    >
-    </ASelect>
+      <!-- Second-level city selection -->
+      <label for="city">Thành phố/Tỉnh: </label>
+      <ASelect
+        id="city"
+        class="mr-[8px]"
+        v-model:value="secondCity"
+        style="min-width: 120px"
+        mode="multiple"
+        :options="cities.map((city) => ({ value: city.value, label: city.label }))"
+        :disabled="isButtonDisabled"
+      >
+      </ASelect>
 
-    <!-- Third-level city (district/farm) selection -->
-    <label for="farm">Trang trại: </label>
-    <ASelect
-      id="farm"
-      v-model:value="thirdCity"
-      style="min-width: 120px"
-      mode="multiple"
-      :options="thirdCities.map((city) => ({ value: city.value, label: city.label }))"
-    >
-    </ASelect>
-  </ASpace>
-  <div class="mt-[16px]">
-    <a-space>
-      <label for="date-picker">Thời gian:</label>
-      <a-range-picker v-model:value="date"></a-range-picker>
-      <!-- Disable button when no dates are selected -->
-      <AButton 
-        class="bg-blue-500 text-white" 
+      <!-- Third-level city (district/farm) selection -->
+      <label for="farm">Trang trại: </label>
+      <ASelect
+        id="farm"
+        class="mr-[8px]"
+        v-model:value="thirdCity"
+        style="min-width: 120px"
+        mode="multiple"
+        :options="thirdCities.map((city) => ({ value: city.value, label: city.label }))"
+        :disabled="isButtonDisabledFarm"
+      >
+      </ASelect>
+      <AButton
+        class="bg-blue-500 text-white"
         @click="filter(province, secondCity, thirdCity)"
         :disabled="isButtonDisabled"
       >
-        Tìm kiếm
+      <SearchOutlined />
       </AButton>
-    </a-space>
-  </div>
+    </div>
+    <div>
+      <a-space>
+        <label for="date-picker">Thời gian:</label>
+        <a-range-picker v-model:value="date"></a-range-picker>
+        <!-- Disable button when no dates are selected -->
+      </a-space>
+    </div>
+  </ASpace>
 </template>
 
 <script setup>
@@ -55,6 +62,7 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 import { useGlobalStore } from '../../stores/global-store'
 import { useDatePickerStore } from '../../stores/datePicker'
+import { SearchOutlined } from '@ant-design/icons-vue'
 
 const store = useGlobalStore()
 const storeDatePicker = useDatePickerStore()
@@ -193,7 +201,10 @@ const filter = (province, secondCity, thirdCity) => {
       storeDatePicker.setStartDate(formattedStartDate)
       storeDatePicker.setEndDate(formattedEndDate)
 
-      localStorage.setItem('roleFarmId', farmsInRegion.map((farm) => farm.value))
+      localStorage.setItem(
+        'roleFarmId',
+        farmsInRegion.map((farm) => farm.value),
+      )
       localStorage.setItem('startDate', formattedStartDate)
       localStorage.setItem('endDate', formattedEndDate)
     } else if (secondCity.length > 0 && thirdCity.length === 0) {
@@ -213,7 +224,10 @@ const filter = (province, secondCity, thirdCity) => {
       storeDatePicker.setStartDate(formattedStartDate)
       storeDatePicker.setEndDate(formattedEndDate)
 
-      localStorage.setItem('roleFarmId', selectedFarms.map((farm) => farm.value))
+      localStorage.setItem(
+        'roleFarmId',
+        selectedFarms.map((farm) => farm.value),
+      )
       localStorage.setItem('startDate', formattedStartDate)
       localStorage.setItem('endDate', formattedEndDate)
     }
@@ -222,7 +236,13 @@ const filter = (province, secondCity, thirdCity) => {
 
 // Computed property to disable the button if no date is selected
 const isButtonDisabled = computed(() => {
-  return !startDate.value || !endDate.value;  // Disable button if either start or end date is missing
+  if (province.value.length === 0) return true
+  return false // Disable button if either start or end date is missing
+})
+
+const isButtonDisabledFarm = computed(() => {
+  if (thirdCity.value.length === 0) return true
+  return false // Disable button if either start or end date is missing
 })
 
 onMounted(() => {
@@ -230,7 +250,7 @@ onMounted(() => {
     .get(`https://farmapidev.tnt-tech.vn/api/Farmhouse/GetFarmhouseList?UsersID=${localStorage.getItem('userID')}`)
     .then((response) => {
       store.setRoleFarmId(response.data)
-      localStorage.setItem('roleFarmId', response.data)
+      localStorage.setItem('roleFarmId', JSON.stringify(response.data))
     })
 })
 </script>

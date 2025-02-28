@@ -1,6 +1,6 @@
 <template>
-  <h1 class="page-title">Biểu đồ trong chuồng</h1>
-  <div class="mb-4">
+  <div class="flex items-center justify-between w-full mb-[18px]">
+    <h1 class="page-title font-bold w-full">Biểu đồ trong chuồng</h1>
     <Filter />
   </div>
   <VaCard class="mb-6">

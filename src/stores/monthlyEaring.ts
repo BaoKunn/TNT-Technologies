@@ -7,7 +7,9 @@ export const useMonthStore = defineStore('monthly', {
       dataIn: [],
       dataOut: [],
       dataInMonth: [],
-      dataOutMonth: []
+      dataOutMonth: [],
+      totalIn: 0,
+      totalOut: 0,
     }
   },
 
@@ -26,6 +28,12 @@ export const useMonthStore = defineStore('monthly', {
     },
     setDataOutMonth(data: never[]) {
       this.dataOutMonth = data
+    },
+    setTotalIn(data: number) {
+      this.totalIn = data
+    },
+    setTotalOut(data: number) {
+      this.totalOut = data
     }
   },
 })

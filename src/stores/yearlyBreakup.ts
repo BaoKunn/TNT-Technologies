@@ -5,7 +5,9 @@ export const useYearlyStore = defineStore('yearly', {
     return {
       labels: [],
       data: [],
-      dataMonth: []
+      dataMonth: [],
+      totalRefund: 0,
+      totalInGate: 0 
     }
   },
 
@@ -18,6 +20,12 @@ export const useYearlyStore = defineStore('yearly', {
     },
     setDataMonth(data: never[]) {
       this.dataMonth = data
-    }
+    },
+    setTotalRefund(data: number) {
+      this.totalRefund = data
+    },
+    setTotalInGate(data: number) {
+      this.totalInGate = data
+    },
   },
 })

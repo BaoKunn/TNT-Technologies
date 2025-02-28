@@ -1,6 +1,6 @@
 <template>
-  <h1 class="page-title">Biểu đồ xuất nhập</h1>
-  <div class="mb-4">
+  <div class="flex items-center justify-between w-full mb-[18px]">
+    <h1 class="page-title font-bold w-full">Biểu đồ xuất nhập</h1>
     <Filter />
   </div>
   <VaCard class="mb-6">
@@ -48,6 +48,7 @@ const storeDatePicker = useDatePickerStore()
 
 let chartRef = ref()
 let myChart = ref()
+let roleFarmIdLocal = ref(localStorage.getItem('roleFarmId'))
 
 const options = {
   scales: {
@@ -121,9 +122,34 @@ const chartDataOutMonth = reactive({
 })
 
 onMounted(() => {
-  // if (store.roleFarmId) {
-  //   fetchData(store.roleFarmId)
-  // }
+  fetchData(roleFarmIdLocal)
+})
+
+// Hàm gọi API
+const fetchData = (roleFarmId) => {
+  Promise.all([
+    axios.get(
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
+    ),
+    axios.get(
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
+    ),
+    axios.get(
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=0`,
+    ),
+    axios.get(
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=0`,
+    ),
+    axios.get(
+      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
+    ),
+  ]).then(([datesResponse, countOutResponse, countInResponse, countInResponseMonth, countOutResponseMonth]) => {
+    storeMonth.setLabels(datesResponse.data)
+    storeMonth.setDataOut(countOutResponse.data[0].ListCount)
+    storeMonth.setDataIn(countInResponse.data[0].ListCount)
+    storeMonth.setDataOutMonth(countOutResponseMonth.data[0].ListCount)
+    storeMonth.setDataInMonth(countInResponseMonth.data[0].ListCount)
+  })
 
   myChart.value = echarts.init(chartRef.value)
   let option = {
@@ -201,43 +227,15 @@ onMounted(() => {
     ],
   }
   myChart.value.setOption(option)
-})
-
-// Hàm gọi API
-const fetchData = (roleFarmId) => {
-  Promise.all([
-    axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
-    ),
-    axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
-    ),
-    axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=0`,
-    ),
-    axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=0`,
-    ),
-    axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
-    ),
-  ]).then(([datesResponse, countOutResponse, countInResponse, countInResponseMonth, countOutResponseMonth]) => {
-    storeMonth.setLabels(datesResponse.data)
-    storeMonth.setDataOut(countOutResponse.data[0].ListCount)
-    storeMonth.setDataIn(countInResponse.data[0].ListCount)
-    storeMonth.setDataOutMonth(countOutResponseMonth.data[0].ListCount)
-    storeMonth.setDataInMonth(countInResponseMonth.data[0].ListCount)
-  })
 }
 
-// Sử dụng watch để theo dõi sự thay đổi của store.roleFarmId
-// watch(
-//   () => store.roleFarmId,
-//   (newRoleFarmId) => {
-//     // Kiểm tra nếu newRoleFarmId có dữ liệu hợp lệ
-//     if (newRoleFarmId) {
-//       fetchData(newRoleFarmId)
-//     }
-//   },
-// )
+watch(
+  [() => store.roleFarmId, () => storeDatePicker.endDate],  // Watch both properties
+  async ([newRoleFarmId, newEndDate]) => {  // Destructure the new values
+    if (newRoleFarmId && newEndDate) {
+      await fetchData(newRoleFarmId);  // Fetch data again with the new roleFarmId
+    }
+  },
+  { immediate: true }  // Call immediately on mount as well
+)
 </script>

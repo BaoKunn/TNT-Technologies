@@ -16,7 +16,7 @@ module.exports = {
         regularMedium: ['0.875rem', '1.25rem'],
       },
       maxWidth: {
-        '7xl': '1128px',
+        '7xl': '1920px',
       },
       colors: {
         primary: 'var(--va-primary)',

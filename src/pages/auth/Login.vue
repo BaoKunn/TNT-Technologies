@@ -66,7 +66,7 @@ const submit = async () => {
   if (validate()) {
     try {
       // Replace the login logic here if necessary
-      if (formData.username == 'bk' && formData.password == '1') {
+      if (formData.username == 'admin' && formData.password == '123456') {
         // Calculate the start and end date
         const today = new Date();
         const endDate = today.toLocaleDateString('en-US'); // Today's date

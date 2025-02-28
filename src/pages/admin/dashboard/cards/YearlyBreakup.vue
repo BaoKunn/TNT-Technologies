@@ -24,7 +24,7 @@ const storeDatePicker = useDatePickerStore()
 
 let chartRef = ref()
 let myChart = ref()
-let roleFarmId = ref(localStorage.getItem('roleFarmId'))
+let roleFarmIdLocal = ref(localStorage.getItem('roleFarmId'))
 
 // Dữ liệu biểu đồ
 const lineChartData = reactive({
@@ -72,17 +72,29 @@ const options = {
 }
 
 onMounted(async () => {
-  if (store.roleFarmId) {
-    try {
+  fetchData(roleFarmIdLocal)
+})
+
+const fetchData = async (roleFarmId) => {
+  try {
     // Gọi các API và đợi kết quả trả về
-    const [datesResponse, countResponse] = await Promise.all([
+    const [datesResponse, countResponse, refundResponse] = await Promise.all([
       axios.get(
-        `https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=${roleFarmId.value}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=3`
+        `https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=3`
       ),
       axios.get(
-        `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId.value}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=3`
+        `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=3`
+      ),
+      axios.get(
+        `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=2`
       ),
     ])
+
+    const totalInGate = countResponse?.data[0]?.ListCount?.reduce((sum, current) => sum + current, 0) || 0;
+    const totalRefund = refundResponse?.data[0]?.ListCount?.reduce((sum, current) => sum + current, 0) || 0;
+
+    storeYearly.setTotalRefund(totalRefund)
+    storeYearly.setTotalInGate(totalInGate)
 
     // Cập nhật dữ liệu vào store
     storeYearly.setLabels(datesResponse.data)
@@ -142,8 +154,7 @@ onMounted(async () => {
   } catch (error) {
     console.error('Error fetching data for chart:', error)
   }
-  }
-})
+}
 
 // Watch để theo dõi sự thay đổi của roleFarmId
 // watch(
@@ -154,4 +165,13 @@ onMounted(async () => {
 //     }
 //   }
 // )
+watch(
+  [() => store.roleFarmId, () => storeDatePicker.endDate],  // Watch both properties
+  async ([newRoleFarmId, newEndDate]) => {  // Destructure the new values
+    if (newRoleFarmId && newEndDate) {
+      await fetchData(newRoleFarmId);  // Fetch data again with the new roleFarmId
+    }
+  },
+  { immediate: true }  // Call immediately on mount as well
+)
 </script>

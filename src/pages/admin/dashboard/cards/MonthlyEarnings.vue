@@ -15,7 +15,7 @@
 import { VaCard } from 'vuestic-ui'
 import * as echarts from 'echarts'
 import axios from 'axios'
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useGlobalStore } from '../../../../stores/global-store'
 import { useMonthStore } from '../../../../stores/monthlyEaring'
 import { useDatePickerStore } from '../../../../stores/datePicker'

@@ -12,24 +12,25 @@
     </VaCardContent>
   </VaCard>
 
-  <div class="flex flex-col md:flex-row gap-4">
-    <VaCard class="h-[380px] grid grid-cols-1 sm:grid-cols-1">
-      <VaCardContent>
-        <div class="w-full h-[300px]">
-          <h1 class="text-xl font-bold mb-4">Biểu đồ số lượng lợn nhập chuồng theo tháng</h1>
-          <VaChart :data="chartDataInMonth" type="bar" :options="options" />
-        </div>
-      </VaCardContent>
-    </VaCard>
-    <VaCard class="h-[380px] grid grid-cols-1 sm:grid-cols-1">
-      <VaCardContent>
-        <div class="w-full h-[300px]">
-          <h1 class="text-xl font-bold mb-4">Biểu đồ số lượng lợn xuất chuồng theo tháng</h1>
-          <VaChart :data="chartDataOutMonth" type="bar" :options="options" />
-        </div>
-      </VaCardContent>
-    </VaCard>
-  </div>
+  <div class="flex space-x-4">
+  <VaCard class="h-[380px] w-1/2">
+    <VaCardContent>
+      <div class="w-full h-[300px]">
+        <h1 class="text-xl font-bold mb-4">Biểu đồ số lượng lợn nhập chuồng theo tháng</h1>
+        <VaChart :data="chartDataInMonth" type="bar" :options="options" />
+      </div>
+    </VaCardContent>
+  </VaCard>
+
+  <VaCard class="h-[380px] w-1/2">
+    <VaCardContent>
+      <div class="w-full h-[300px]">
+        <h1 class="text-xl font-bold mb-4">Biểu đồ số lượng lợn xuất chuồng theo tháng</h1>
+        <VaChart :data="chartDataOutMonth" type="bar" :options="options" />
+      </div>
+    </VaCardContent>
+  </VaCard>
+</div>
 </template>
 
 <script setup>

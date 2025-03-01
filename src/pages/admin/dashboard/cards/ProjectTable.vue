@@ -1,10 +1,8 @@
 <script setup>
 import axios from 'axios'
 import dayjs from 'dayjs'
-import { useGlobalStore } from '../../../../stores/global-store'
 import { onMounted, ref } from 'vue'
 
-const store = useGlobalStore()
 const userID = ref(localStorage.getItem('userID'))
 let dataSource = ref([])
 
@@ -40,7 +38,7 @@ const columns = [
 
 const filterFarmHouse = (FarmhouseID) => {
   // Kiểm tra FarmhouseID và trả về tên tương ứng
-  if (FarmhouseID === '1') return 'Trại Phổ Yến'
+  if (FarmhouseID == '1') return 'Trại Phổ Yên'
   else if (FarmhouseID === '2') return 'Trại Thạch Thất'
   else if (FarmhouseID === '3') return 'Trại Thái Bình'
   else if (FarmhouseID === '4') return 'Trại Thanh Hóa'
@@ -93,10 +91,4 @@ onMounted(() => {
 </template>
 
 <style scoped>
-[data-doc-theme='light'] .ant-table-striped :deep(.table-striped) td {
-  background-color: #fafafa;
-}
-[data-doc-theme='dark'] .ant-table-striped :deep(.table-striped) td {
-  background-color: rgb(29, 29, 29);
-}
 </style>

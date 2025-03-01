@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup>
 import RevenueUpdates from './cards/RevenueReport.vue'
 import RevenueUpdatesPie from './cards/RevenueReportPie.vue'
 import ProjectTable from './cards/ProjectTable.vue'

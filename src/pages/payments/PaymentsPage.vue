@@ -13,30 +13,31 @@
   </VaCard>
 
   <div class="flex space-x-4">
-  <VaCard class="h-[380px] w-1/2">
-    <VaCardContent>
-      <div class="w-full h-[300px]">
-        <h1 class="text-xl font-bold mb-4">Biểu đồ số lượng lợn nhập chuồng theo tháng</h1>
-        <VaChart :data="chartDataInMonth" type="bar" :options="options" />
-      </div>
-    </VaCardContent>
-  </VaCard>
+    <VaCard class="w-1/2">
+      <VaCardContent>
+        <div class="w-full">
+          <h1 class="text-xl font-bold mb-4">Biểu đồ số lượng lợn nhập chuồng theo tháng</h1>
+          <div ref="chartInRef" class="w-full h-[400px]"></div>
+          <!-- <VaChart :data="chartDataInMonth" type="bar" :options="options" /> -->
+        </div>
+      </VaCardContent>
+    </VaCard>
 
-  <VaCard class="h-[380px] w-1/2">
-    <VaCardContent>
-      <div class="w-full h-[300px]">
-        <h1 class="text-xl font-bold mb-4">Biểu đồ số lượng lợn xuất chuồng theo tháng</h1>
-        <VaChart :data="chartDataOutMonth" type="bar" :options="options" />
-      </div>
-    </VaCardContent>
-  </VaCard>
-</div>
+    <VaCard class="w-1/2">
+      <VaCardContent>
+        <div class="w-full h-[300px]">
+          <h1 class="text-xl font-bold mb-4">Biểu đồ số lượng lợn xuất chuồng theo tháng</h1>
+          <div ref="chartOutRef" class="w-full h-[400px]"></div>
+          <!-- <VaChart :data="chartDataOutMonth" type="bar" :options="options" /> -->
+        </div>
+      </VaCardContent>
+    </VaCard>
+  </div>
 </template>
 
 <script setup>
-import VaChart from '../../components/va-charts/VaChart.vue'
 import Filter from '../../components/filter/Filter.vue'
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import axios from 'axios'
 import * as echarts from 'echarts'
 import { useGlobalStore } from '../../stores/global-store'
@@ -49,78 +50,13 @@ const storeDatePicker = useDatePickerStore()
 
 let chartRef = ref()
 let myChart = ref()
+
+let chartInRef = ref()
+let myInChart = ref()
+
+let chartOutRef = ref()
+let myOutChart = ref()
 let roleFarmIdLocal = ref(localStorage.getItem('roleFarmId'))
-
-const options = {
-  scales: {
-    x: {
-      display: true,
-      grid: {
-        display: true, // Disable X-axis grid lines ("net")
-      },
-    },
-    y: {
-      display: true,
-      grid: {
-        display: true, // Disable Y-axis grid lines ("net")
-      },
-      ticks: {
-        display: true, // Hide Y-axis values
-      },
-    },
-  },
-  interaction: {
-    intersect: false,
-    mode: 'index',
-  },
-  plugins: {
-    legend: {
-      display: true,
-      position: 'top',
-    },
-    tooltip: {
-      enabled: true,
-    },
-  },
-}
-
-const chartData = reactive({
-  labels: storeMonth.labels,
-  datasets: [
-    {
-      label: 'Xuất chuồng',
-      data: storeMonth.dataOut,
-      backgroundColor: ['blue'],
-    },
-    {
-      label: 'Nhập chuồng',
-      data: storeMonth.dataIn,
-      backgroundColor: ['red'],
-    },
-  ],
-})
-
-const chartDataInMonth = reactive({
-  labels: storeMonth.labels,
-  datasets: [
-    {
-      label: 'Nhập chuồng',
-      data: storeMonth.dataIn,
-      backgroundColor: ['green'],
-    },
-  ],
-})
-
-const chartDataOutMonth = reactive({
-  labels: storeMonth.labels,
-  datasets: [
-    {
-      label: 'Nhập chuồng',
-      data: storeMonth.dataOut,
-      backgroundColor: ['Olive'],
-    },
-  ],
-})
 
 onMounted(() => {
   fetchData(roleFarmIdLocal)
@@ -228,15 +164,84 @@ const fetchData = (roleFarmId) => {
     ],
   }
   myChart.value.setOption(option)
+
+  myInChart.value = echarts.init(chartInRef.value)
+  let optionIn = {
+    tooltip: {
+      trigger: 'axis',
+    },
+    legend: {},
+    toolbox: {
+      show: true,
+      feature: {
+        dataView: { readOnly: false },
+        restore: {},
+        saveAsImage: {},
+      },
+    },
+    xAxis: {
+      type: 'category',
+      data: storeMonth.labels,
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: {
+        formatter: '{value}',
+      },
+    },
+    series: [
+      {
+        name: 'Số lượng nhập chuồng',
+        data: storeMonth.dataIn,
+        type: 'bar',
+      },
+    ],
+  }
+  myInChart.value.setOption(optionIn)
+
+  myOutChart.value = echarts.init(chartOutRef.value)
+  let optionOut = {
+    tooltip: {
+      trigger: 'axis',
+    },
+    legend: {},
+    toolbox: {
+      show: true,
+      feature: {
+        dataView: { readOnly: false },
+        restore: {},
+        saveAsImage: {},
+      },
+    },
+    xAxis: {
+      type: 'category',
+      data: storeMonth.labels,
+    },
+    yAxis: {
+      type: 'value',
+    },
+    series: [
+      {
+        name: 'Số lượng xuất chuồng',
+        data: storeMonth.dataOut,
+        type: 'bar',
+        itemStyle: {
+            color: '#a90000'
+          }
+      },
+    ],
+  }
+  myOutChart.value.setOption(optionOut)
 }
 
 watch(
-  [() => store.roleFarmId, () => storeDatePicker.endDate],  // Watch both properties
-  async ([newRoleFarmId, newEndDate]) => {  // Destructure the new values
+  [() => store.roleFarmId, () => storeDatePicker.endDate], // Watch both properties
+  async ([newRoleFarmId, newEndDate]) => {
+    // Destructure the new values
     if (newRoleFarmId && newEndDate) {
-      await fetchData(newRoleFarmId);  // Fetch data again with the new roleFarmId
+      await fetchData(newRoleFarmId) // Fetch data again with the new roleFarmId
     }
   },
-  { immediate: true }  // Call immediately on mount as well
+  { immediate: true }, // Call immediately on mount as well
 )
 </script>

@@ -47,7 +47,6 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
-import axios from 'axios'
 import { validators } from '../../services/utils'
 import { useGlobalStore } from '../../stores/global-store'
 
@@ -70,16 +69,14 @@ const submit = async () => {
         // Calculate the start and end date
         const today = new Date();
         const endDate = today.toLocaleDateString('en-US'); // Today's date
-        today.setDate(today.getDate() - 7); // Subtract 7 days from today
+        today.setFullYear(today.getFullYear() - 2); // Subtract 7 days from today
         const startDate = today.toLocaleDateString('en-US'); // Start date (7 days ago)
 
-        const a = [startDate]
-        const b = [endDate]
         // Set to localStorage
         store.setUserID('1')
         localStorage.setItem('userID', '1');
-        localStorage.setItem('startDate', '01/31/2025');
-        localStorage.setItem('endDate', '01/31/2025');
+        localStorage.setItem('startDate', startDate);
+        localStorage.setItem('endDate', endDate);
 
         // Show success toast
         init({ message: "You've successfully logged in", color: 'success' });

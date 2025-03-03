@@ -2,7 +2,7 @@
   <ASpace class="flex flex-col items-end gap-4 w-full">
     <!-- Province selection -->
     <div class="mb-[12px]">
-      <label for="local" >Khu vực: </label>
+      <label for="local">Khu vực: </label>
       <ASelect
         id="local"
         class="mr-[8px]"
@@ -43,7 +43,7 @@
         @click="filter(province, secondCity, thirdCity)"
         :disabled="isButtonDisabled"
       >
-      <SearchOutlined />
+        <SearchOutlined />
       </AButton>
     </div>
     <div>
@@ -131,6 +131,8 @@ watch(date, (newDate) => {
     // Cập nhật store nếu cần
     storeDatePicker.setStartDate(formattedStartDate)
     storeDatePicker.setEndDate(formattedEndDate)
+    localStorage.setItem('startDate', formattedStartDate.value)
+    localStorage.setItem('endDate', formattedEndDate.value)
   }
 })
 
@@ -205,8 +207,8 @@ const filter = (province, secondCity, thirdCity) => {
         'roleFarmId',
         farmsInRegion.map((farm) => farm.value),
       )
-      localStorage.setItem('startDate', formattedStartDate)
-      localStorage.setItem('endDate', formattedEndDate)
+      localStorage.setItem('startDate', formattedStartDate.value)
+      localStorage.setItem('endDate', formattedEndDate.value)
     } else if (secondCity.length > 0 && thirdCity.length === 0) {
       // Khi đã chọn thành phố nhưng chưa chọn trang trại
       let selectedFarms = []
@@ -228,8 +230,8 @@ const filter = (province, secondCity, thirdCity) => {
         'roleFarmId',
         selectedFarms.map((farm) => farm.value),
       )
-      localStorage.setItem('startDate', formattedStartDate)
-      localStorage.setItem('endDate', formattedEndDate)
+      localStorage.setItem('startDate', JSON.stringify(formattedStartDate))
+      localStorage.setItem('endDate', JSON.stringify(formattedEndDate))
     }
   }
 }
@@ -246,11 +248,9 @@ const isButtonDisabledFarm = computed(() => {
 })
 
 onMounted(() => {
-  axios
-    .get(`https://farmapidev.tnt-tech.vn/api/Farmhouse/GetFarmhouseList?UsersID=${localStorage.getItem('userID')}`)
-    .then((response) => {
-      store.setRoleFarmId(response.data)
-      localStorage.setItem('roleFarmId', JSON.stringify(response.data))
-    })
+  axios.get(`/Farmhouse/GetFarmhouseList?UsersID=${localStorage.getItem('userID')}`).then((response) => {
+    store.setRoleFarmId(response.data)
+    localStorage.setItem('roleFarmId', JSON.stringify(response.data))
+  })
 })
 </script>

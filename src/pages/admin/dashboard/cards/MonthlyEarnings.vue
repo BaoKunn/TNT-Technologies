@@ -26,25 +26,29 @@ const storeDatePicker = useDatePickerStore()
 
 let chartRef = ref()
 let myChart = ref()
-let roleFarmIdLocal = ref(localStorage.getItem('roleFarmId'))
+let roleFarmIdLocal = ref(localStorage.getItem('roleFarmId') || '')
+let startDateLocal = ref(localStorage.getItem('startDate'))
+let endDateLocal = ref(localStorage.getItem('endDate'))
 
 // Call fetchData on component mount as well
-onMounted(() => {
-  fetchData(roleFarmIdLocal) // Ensure that data is fetched initially
-})
+// onMounted(() => {
+//   if (roleFarmIdLocal.value) {
+//     fetchData(roleFarmIdLocal.value, startDateLocal.value, endDateLocal.value) // Ensure that data is fetched initially
+//   }
+// })
 
 // Fetch data based on roleFarmId
-const fetchData = async (roleFarmId) => {
+const fetchData = async (roleFarmId, startDate, endDate) => {
   // API calls
   const [datesResponse, countOutResponse, countInResponse] = await Promise.all([
     axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetListDateOfBill?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
+      `/Bills/GetListDateOfBill?ListFarmhouse=${roleFarmId}&fromdate=${startDate}&todate=${endDate}&BillImport=1`,
     ),
     axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=1`,
+      `/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${startDate}&todate=${endDate}&BillImport=1`,
     ),
     axios.get(
-      `https://farmapidev.tnt-tech.vn/api/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${storeDatePicker.startDate}&todate=${storeDatePicker.endDate}&BillImport=0`,
+      `/Bills/GetTotalPetsInGate?ListFarmhouse=${roleFarmId}&fromdate=${startDate}&todate=${endDate}&BillImport=0`,
     ),
   ])
 
@@ -144,14 +148,27 @@ const fetchData = async (roleFarmId) => {
   myChart.value.setOption(option)
 }
 
-watch(
-  [() => store.roleFarmId, () => storeDatePicker.endDate], // Watch both properties
-  async ([newRoleFarmId, newEndDate]) => {
-    // Destructure the new values
-    if (newRoleFarmId && newEndDate) {
-      await fetchData(newRoleFarmId) // Fetch data again with the new roleFarmId
-    }
-  },
-  { immediate: true }, // Call immediately on mount as well
-)
+// watch(
+//   [() => store.roleFarmId, () => storeDatePicker.endDate], // Watch both properties
+//   async ([newRoleFarmId, newEndDate]) => {
+//     // Destructure the new values
+//     if (newRoleFarmId && newEndDate) {
+//       await fetchData(store.roleFarmId, storeDatePicker.startDate, storeDatePicker.endDate) // Fetch data again with the new roleFarmId
+//     }
+//   },
+//   { immediate: true }, // Call immediately on mount as well
+// )
+
+watch(() => store.roleFarmId, (newValue) => {
+  if (newValue) {
+    fetchData(store.roleFarmId, storeDatePicker.startDate || startDateLocal.value, storeDatePicker.endDate || endDateLocal.value)
+  }
+});
+
+watch(() => storeDatePicker.endDate, (newValue) => {
+  if (newValue) {
+    fetchData(store.roleFarmId, storeDatePicker.startDate || startDateLocal.value, storeDatePicker.endDate || endDateLocal.value)
+  }
+});
+
 </script>
